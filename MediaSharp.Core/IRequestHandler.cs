@@ -12,7 +12,8 @@ namespace MediaSharp.Core
     /// method
     /// </summary>
     /// <typeparam name="TResponse">Current return type</typeparam>
-    public interface IRequestHandler<TResponse>
+    public interface IRequestHandler<TRequest, TResponse>
+        where TRequest : IRequest<TResponse>
         where TResponse : class
     {
         /// <summary>
@@ -22,6 +23,6 @@ namespace MediaSharp.Core
         /// <param name="request">Current <see cref="IRequest{TResult}"/> to be handled.</param>
         /// <param name="cancellationToken">Cancellation token.</param>
         /// <returns></returns>
-        Task<TResponse> HandleAsync(IRequest<TResponse> request, CancellationToken cancellationToken);
+        Task<TResponse> HandleAsync(TRequest request, CancellationToken cancellationToken);
     }
 }
