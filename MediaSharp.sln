@@ -3,13 +3,15 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 17
 VisualStudioVersion = 17.4.33213.308
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MediaSharp.Core", "MediaSharp.Core\MediaSharp.Core.csproj", "{453F3565-F819-4876-9E7F-0A8E705E0099}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "MediaSharp.Core", "MediaSharp.Core\MediaSharp.Core.csproj", "{453F3565-F819-4876-9E7F-0A8E705E0099}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MediaSharp.Exceptions", "MediaSharp.Exceptions\MediaSharp.Exceptions.csproj", "{EE034685-E07C-4AF8-83FA-A715C59134DD}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "MediaSharp.Exceptions", "MediaSharp.Exceptions\MediaSharp.Exceptions.csproj", "{EE034685-E07C-4AF8-83FA-A715C59134DD}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MediaSharp.SourceGenerators", "MediaSharp.SourceGenerators\MediaSharp.SourceGenerators.csproj", "{E1573BEC-902C-4B21-BA29-64F4B510F02B}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "MediaSharp.SourceGenerators", "MediaSharp.SourceGenerators\MediaSharp.SourceGenerators.csproj", "{E1573BEC-902C-4B21-BA29-64F4B510F02B}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Tester", "Tester\Tester.csproj", "{429438AA-5ED4-445F-A131-84617D4E48B4}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Tester", "Tester\Tester.csproj", "{429438AA-5ED4-445F-A131-84617D4E48B4}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MediaSharp.DependencyInjection", "MediaSharp.DependencyInjection\MediaSharp.DependencyInjection.csproj", "{54B9DE9B-1AB7-474D-A4A3-A949D7A70D27}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -33,6 +35,10 @@ Global
 		{429438AA-5ED4-445F-A131-84617D4E48B4}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{429438AA-5ED4-445F-A131-84617D4E48B4}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{429438AA-5ED4-445F-A131-84617D4E48B4}.Release|Any CPU.Build.0 = Release|Any CPU
+		{54B9DE9B-1AB7-474D-A4A3-A949D7A70D27}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{54B9DE9B-1AB7-474D-A4A3-A949D7A70D27}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{54B9DE9B-1AB7-474D-A4A3-A949D7A70D27}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{54B9DE9B-1AB7-474D-A4A3-A949D7A70D27}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

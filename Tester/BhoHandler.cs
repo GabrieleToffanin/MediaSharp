@@ -1,6 +1,8 @@
 ﻿using MediaSharp.Core;
 using MediaSharp.Core.Attributes;
 
+namespace Tester;
+
 [CallableHandler]
 public partial class BhoHandler : IRequestHandler<Bho, Qualcosa>
 {

@@ -1,19 +1,21 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using MediaSharp.Core;
+﻿using MediaSharp.Core;
 using MediaSharp.Core.Attributes;
 
-namespace Tester
+namespace Tester;
+
+[CallableHandler]
+public partial class NumbersHandler : IRequestHandler<Altro, IEnumerable<Qualcosa>>
 {
-    [CallableHandler]
-    public class NumbersHandler : IRequestHandler<Altro, IEnumerable<Qualcosa>>
+    public List<Qualcosa> Numbers = new()
     {
-        public Task<IEnumerable<Qualcosa>> HandleAsync(Altro request, CancellationToken cancellationToken)
+        new Qualcosa()
         {
-            throw new NotImplementedException();
+            Id = 1
         }
+    };
+
+    public async Task<IEnumerable<Qualcosa>> HandleAsync(Altro request, CancellationToken cancellationToken)
+    {
+        return Numbers.Where(x => x.Id == request.id);
     }
 }

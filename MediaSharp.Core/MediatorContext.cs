@@ -8,13 +8,13 @@ namespace MediaSharp.Core
 {
     public class MediatorContext
     {
-        public List<object> RequestHandlers { get; set; }
+        internal Dictionary<Type, object> RequestHandlers { get; } = new();
 
-        public void Add<THandler, TResult>(IRequestHandler<THandler, TResult> handler)
-            where THandler : IRequest<TResult>
+        public void Add<TRequest, TResult>(IRequestHandler<TRequest, TResult> handler)
+            where TRequest : IRequest<TResult>
             where TResult : class
         {
-            RequestHandlers.Add(handler);
+            RequestHandlers[typeof(TRequest)] = handler;
         }
     }
 }
