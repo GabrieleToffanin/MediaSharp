@@ -29,6 +29,17 @@ namespace MediaSharp.SourceGenerators.Mediator
             var memberDeclSyntax = new SyntaxList<MemberDeclarationSyntax>();
             foreach (var classSymbol in item)
             {
+                var constructorInfo = classSymbol.Members.FirstOrDefault(x => x is ConstructorDeclarationSyntax);
+
+                var parametersInfo = (constructorInfo as ConstructorDeclarationSyntax)?.ParameterList;
+
+                var includedContextParametersSyntax = parametersInfo.AddParameters(
+                    Parameter(
+                            Identifier("context"))
+                        .WithType(
+                            IdentifierName("MediaSharp.Core.MediatorContext"))
+                );
+
                 var decl = 
                     ClassDeclaration(classSymbol.Identifier)
                         .WithModifiers(
@@ -45,13 +56,12 @@ namespace MediaSharp.SourceGenerators.Mediator
                             .WithModifiers(
                                 TokenList(
                                     Token(SyntaxKind.PublicKeyword)))
-                            .WithParameterList(
-                                ParameterList(
-                                    SingletonSeparatedList<ParameterSyntax>(
-                                        Parameter(
-                                                Identifier("context"))
-                                            .WithType(
-                                                IdentifierName("MediaSharp.Core.MediatorContext")))))
+                            .WithParameterList(includedContextParametersSyntax)
+                            .WithInitializer(
+                                ConstructorInitializer(
+                                    SyntaxKind.ThisConstructorInitializer,
+                                    CreateConstructorInitArgSyntax(parametersInfo)
+                                    ))
                             .WithBody(
                                 Block(
                                     SingletonList<StatementSyntax>(
@@ -73,6 +83,19 @@ namespace MediaSharp.SourceGenerators.Mediator
             return CompilationUnit()
                 .AddMembers(memberDeclSyntax.ToArray())
                 .NormalizeWhitespace();
+        }
+
+        private static ArgumentListSyntax CreateConstructorInitArgSyntax(ParameterListSyntax pls)
+        {
+            var singlList = new SeparatedSyntaxList<ArgumentSyntax>();
+
+            foreach (var param in pls.Parameters)
+            {
+                singlList = singlList.Add(Argument(
+                    IdentifierName(param.Identifier)));
+            }
+
+            return ArgumentList(singlList);
         }
     }
 }
