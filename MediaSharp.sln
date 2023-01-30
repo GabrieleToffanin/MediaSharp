@@ -9,6 +9,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MediaSharp.Exceptions", "Me
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MediaSharp.SourceGenerators", "MediaSharp.SourceGenerators\MediaSharp.SourceGenerators.csproj", "{E1573BEC-902C-4B21-BA29-64F4B510F02B}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Tester", "Tester\Tester.csproj", "{429438AA-5ED4-445F-A131-84617D4E48B4}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -27,6 +29,10 @@ Global
 		{E1573BEC-902C-4B21-BA29-64F4B510F02B}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{E1573BEC-902C-4B21-BA29-64F4B510F02B}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{E1573BEC-902C-4B21-BA29-64F4B510F02B}.Release|Any CPU.Build.0 = Release|Any CPU
+		{429438AA-5ED4-445F-A131-84617D4E48B4}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{429438AA-5ED4-445F-A131-84617D4E48B4}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{429438AA-5ED4-445F-A131-84617D4E48B4}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{429438AA-5ED4-445F-A131-84617D4E48B4}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

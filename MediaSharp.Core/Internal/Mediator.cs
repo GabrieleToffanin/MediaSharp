@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace MediaSharp.Core.Internal
 {
-    internal sealed partial class Mediator : IMediator
+    public sealed partial class Mediator : IMediator
     {
         public async Task<TResult> SendAsync<TResult>(IRequest<TResult> request, CancellationToken cancellationToken)
             where TResult : class

@@ -16,10 +16,10 @@ namespace MediaSharp.SourceGenerators.Mediator
         public void Initialize(IncrementalGeneratorInitializationContext context)
         {
 
-#if DEBUG
-            if (!Debugger.IsAttached)
-                Debugger.Launch();
-#endif
+//#if DEBUG
+//            if (!Debugger.IsAttached)
+//                Debugger.Launch();
+//#endif
 
             IncrementalValuesProvider<ClassDeclarationSyntax> callableMediatorMethodsInfo =
                 context.SyntaxProvider
@@ -29,7 +29,7 @@ namespace MediaSharp.SourceGenerators.Mediator
                         static (context, token) =>
                         {
                             ClassDeclarationSyntax isValidClassCdecl =
-                                (ClassDeclarationSyntax)context.TargetNode.Parent?.Parent;
+                                (ClassDeclarationSyntax)context.TargetNode;
 
                             var isValidClassDecl = Execute.TryGetClassInfo(isValidClassCdecl, context);
 

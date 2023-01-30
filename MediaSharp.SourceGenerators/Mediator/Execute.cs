@@ -19,7 +19,7 @@ namespace MediaSharp.SourceGenerators.Mediator
         {
             var classSymbol = ModelExtensions.GetDeclaredSymbol(ctx.SemanticModel, classSyntax) as ITypeSymbol;
             var isClassMediaRegistrable =
-                classSymbol.AllInterfaces.Any(x => x.Name is "MediaSharp.Core.IRequestHandler");
+                classSymbol.AllInterfaces.Any(x => x.Name is "IRequestHandler");
 
             return isClassMediaRegistrable;
         }
@@ -29,7 +29,7 @@ namespace MediaSharp.SourceGenerators.Mediator
             var memberDeclSyntax = new SyntaxList<MemberDeclarationSyntax>();
             foreach (var classSymbol in item)
             {
-                memberDeclSyntax.Add(
+                var decl = 
                     ClassDeclaration(classSymbol.Identifier)
                         .WithModifiers(
                             TokenList(
@@ -38,34 +38,36 @@ namespace MediaSharp.SourceGenerators.Mediator
                                     Token(SyntaxKind.PublicKeyword),
                                     Token(SyntaxKind.PartialKeyword)
                                 }))
-                        .WithMembers(
-                            SingletonList<MemberDeclarationSyntax>(
-                                ConstructorDeclaration(
-                                        classSymbol.Identifier)
-                                    .WithModifiers(
-                                        TokenList(
-                                            Token(SyntaxKind.PublicKeyword)))
-                                    .WithParameterList(
-                                        ParameterList(
-                                            SingletonSeparatedList<ParameterSyntax>(
-                                                Parameter(
-                                                        Identifier("context"))
-                                                    .WithType(
-                                                        IdentifierName("MediaSharp.Core.MediatorContext")))))
-                                    .WithBody(
-                                        Block(
-                                            SingletonList<StatementSyntax>(
-                                                ExpressionStatement(
-                                                    InvocationExpression(
-                                                            MemberAccessExpression(
-                                                                SyntaxKind.SimpleMemberAccessExpression,
-                                                                IdentifierName("context"),
-                                                                IdentifierName("Add")))
-                                                        .WithArgumentList(
-                                                            ArgumentList(
-                                                                SingletonSeparatedList<ArgumentSyntax>(
-                                                                    Argument(
-                                                                        ThisExpression())))))))))));
+                .WithMembers(
+                    SingletonList<MemberDeclarationSyntax>(
+                        ConstructorDeclaration(
+                                classSymbol.Identifier)
+                            .WithModifiers(
+                                TokenList(
+                                    Token(SyntaxKind.PublicKeyword)))
+                            .WithParameterList(
+                                ParameterList(
+                                    SingletonSeparatedList<ParameterSyntax>(
+                                        Parameter(
+                                                Identifier("context"))
+                                            .WithType(
+                                                IdentifierName("MediaSharp.Core.MediatorContext")))))
+                            .WithBody(
+                                Block(
+                                    SingletonList<StatementSyntax>(
+                                        ExpressionStatement(
+                                            InvocationExpression(
+                                                    MemberAccessExpression(
+                                                        SyntaxKind.SimpleMemberAccessExpression,
+                                                        IdentifierName("context"),
+                                                        IdentifierName("Add")))
+                                                .WithArgumentList(
+                                                    ArgumentList(
+                                                        SingletonSeparatedList<ArgumentSyntax>(
+                                                            Argument(
+                                                                ThisExpression()))))))))));
+
+                memberDeclSyntax = memberDeclSyntax.Add(decl);
             }
 
             return CompilationUnit()
