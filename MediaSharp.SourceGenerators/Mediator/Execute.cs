@@ -16,31 +16,45 @@ namespace MediaSharp.SourceGenerators.Mediator
         public static bool TryGetClassInfo(
             ClassDeclarationSyntax classSyntax,
             GeneratorAttributeSyntaxContext ctx,
-            out IAssemblySymbol namespaceName)
+            out IAssemblySymbol namespaceName,
+            out string argumentName)
         {
             var classSymbol = ModelExtensions.GetDeclaredSymbol(ctx.SemanticModel, classSyntax) as ITypeSymbol;
 
+            argumentName = "";
+
             var isClassMediaRegistrable =
                 classSymbol.AllInterfaces.Any(x => x.Name is "IRequestHandler");
+
+            if (isClassMediaRegistrable)
+            {
+                var currentTypeTarget = classSymbol.AllInterfaces[0].TypeArguments[0];
+                var fullArgumentNamespace = currentTypeTarget.ContainingNamespace.Name;
+                var fullArgumentName = currentTypeTarget.Name;
+
+                var separatorToken = string.IsNullOrEmpty(fullArgumentNamespace) ? "" : ".";
+
+                argumentName = $"{fullArgumentNamespace}{separatorToken}{fullArgumentName}";
+            }
 
             namespaceName = classSymbol.ContainingAssembly;
 
             return isClassMediaRegistrable;
         }
 
-        public static CompilationUnitSyntax GetKnownClassSyntax(ImmutableArray<(ClassDeclarationSyntax, IAssemblySymbol)> item)
+        public static CompilationUnitSyntax GetKnownClassSyntax(ImmutableArray<HandlerInfoSyntax> item)
         {
             var memberDeclSyntax = new SyntaxList<MemberDeclarationSyntax>();
-            
+
             foreach (var classSymbol in item)
             {
-                var constructorInfo = classSymbol.Item1.Members.FirstOrDefault(x => x is ConstructorDeclarationSyntax);
+                var constructorInfo = classSymbol.ClassDelc.Members.FirstOrDefault(x => x is ConstructorDeclarationSyntax);
 
                 var parametersInfo = (constructorInfo as ConstructorDeclarationSyntax)?.ParameterList;
 
                 var includedContextParametersSyntax = parametersInfo?.AddParameters(CreateMediaSharpContextInjection());
 
-                var ctorSyntax = CreateConstuctorBased(classSymbol.Item1, includedContextParametersSyntax);
+                var ctorSyntax = CreateConstuctorBased(classSymbol.ClassDelc, includedContextParametersSyntax);
 
                 if (parametersInfo is not null)
                 {
@@ -51,21 +65,19 @@ namespace MediaSharp.SourceGenerators.Mediator
                         ));
                 }
 
-                var currentGeneratedCtor = new SyntaxList<MemberDeclarationSyntax>(ctorSyntax);
-
-                var decl = 
+                var decl =
                     NamespaceDeclaration(
-                        IdentifierName(classSymbol.Item2.Identity.Name)).WithMembers(
-                    SingletonList<MemberDeclarationSyntax>(
-                    ClassDeclaration(classSymbol.Item1.Identifier)
-                        .WithModifiers(
-                            TokenList(
-                                new[]
-                                {
-                                    Token(SyntaxKind.PublicKeyword),
-                                    Token(SyntaxKind.PartialKeyword)
-                                }))
-                .WithMembers(currentGeneratedCtor)));
+                        IdentifierName(classSymbol.assemblyInfo.Identity.Name)).WithMembers(
+                        SingletonList<MemberDeclarationSyntax>(
+                            ClassDeclaration(classSymbol.ClassDelc.Identifier)
+                                .WithModifiers(
+                                    TokenList(
+                                        new[]
+                                        {
+                                            Token(SyntaxKind.PublicKeyword),
+                                            Token(SyntaxKind.PartialKeyword)
+                                        }))
+                                .AddMembers(ctorSyntax, CreateMethodImplSyntax(classSymbol.argumentName))));
 
                 memberDeclSyntax = memberDeclSyntax.Add(decl);
             }
@@ -122,6 +134,97 @@ namespace MediaSharp.SourceGenerators.Mediator
                                             SingletonSeparatedList<ArgumentSyntax>(
                                                 Argument(
                                                     ThisExpression()))))))));
+        }
+
+        private static MethodDeclarationSyntax CreateMethodImplSyntax(string classArgumentName)
+        {
+            return MethodDeclaration
+                (
+                    GenericName
+                        (
+                            Identifier("Task"))
+                        .WithTypeArgumentList
+                        (
+                            TypeArgumentList
+                            (
+                                SingletonSeparatedList<TypeSyntax>
+                                (
+                                    PredefinedType
+                                    (
+                                        Token(SyntaxKind.ObjectKeyword))))),
+                    Identifier("HandleAsync"))
+                .WithModifiers
+                (
+                    TokenList
+                    (
+                        new[]
+                        {
+                            Token(SyntaxKind.PublicKeyword),
+                            Token(SyntaxKind.AsyncKeyword)
+                        }))
+                .WithParameterList
+                (
+                    ParameterList
+                    (
+                        SeparatedList<ParameterSyntax>
+                        (
+                            new SyntaxNodeOrToken[]
+                            {
+                                Parameter
+                                    (
+                                        Identifier("request"))
+                                    .WithType
+                                    (
+                                        IdentifierName("MediaSharp.Core.Internal.RequestProxy")),
+                                Token(SyntaxKind.CommaToken),
+                                Parameter
+                                    (
+                                        Identifier("cancellationToken"))
+                                    .WithType
+                                    (
+                                        IdentifierName("CancellationToken"))
+                            })))
+                .WithBody
+                (
+                    Block
+                    (
+                        SingletonList<StatementSyntax>
+                        (
+                            ReturnStatement
+                            (
+                                AwaitExpression
+                                (
+                                    InvocationExpression
+                                        (
+                                            MemberAccessExpression
+                                            (
+                                                SyntaxKind.SimpleMemberAccessExpression,
+                                                ThisExpression(),
+                                                IdentifierName("HandleAsync")))
+                                        .WithArgumentList
+                                        (
+                                            ArgumentList
+                                            (
+                                                SeparatedList<ArgumentSyntax>
+                                                (
+                                                    new SyntaxNodeOrToken[]
+                                                    {
+                                                        Argument
+                                                        (
+                                                            BinaryExpression
+                                                            (
+                                                                SyntaxKind.AsExpression,
+                                                                MemberAccessExpression
+                                                                (
+                                                                    SyntaxKind.SimpleMemberAccessExpression,
+                                                                    IdentifierName("request"),
+                                                                    IdentifierName("Proxy")),
+                                                                IdentifierName(classArgumentName))),
+                                                        Token(SyntaxKind.CommaToken),
+                                                        Argument
+                                                        (
+                                                            IdentifierName("cancellationToken"))
+                                                    }))))))));
         }
     }
 }

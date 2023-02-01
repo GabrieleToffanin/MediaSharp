@@ -21,7 +21,7 @@ namespace MediaSharp.SourceGenerators.Mediator
 //                Debugger.Launch();
 //#endif
 
-            IncrementalValuesProvider<(ClassDeclarationSyntax, IAssemblySymbol)> callableMediatorMethodsInfo =
+            IncrementalValuesProvider<HandlerInfoSyntax> callableMediatorMethodsInfo =
                 context.SyntaxProvider
                     .ForAttributeWithMetadataName(
                         "MediaSharp.Core.Attributes.CallableHandlerAttribute",
@@ -31,10 +31,10 @@ namespace MediaSharp.SourceGenerators.Mediator
                             ClassDeclarationSyntax isValidClassCdecl =
                                 (ClassDeclarationSyntax)context.TargetNode;
 
-                            var isValidClassDecl = Execute.TryGetClassInfo(isValidClassCdecl, context, out var namespaceName);
+                            var isValidClassDecl = Execute.TryGetClassInfo(isValidClassCdecl, context, out var namespaceName, out var argumentName);
 
-                            return isValidClassDecl ? (ClassDecl: isValidClassCdecl,Namespace: namespaceName) : (null, null);
-                        }).Where(x => x is not (null, null));
+                            return isValidClassDecl ? new HandlerInfoSyntax(){ClassDelc = isValidClassCdecl, argumentName = argumentName, assemblyInfo = namespaceName} : null;
+                        }).Where(x => x is not null);
 
             context.RegisterSourceOutput(callableMediatorMethodsInfo.Collect(),
                 static (context, item) =>

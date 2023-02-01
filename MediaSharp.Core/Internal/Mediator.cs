@@ -19,17 +19,20 @@ namespace MediaSharp.Core.Internal
         public async Task<TResult> SendAsync<TResult>(IRequest<TResult> request, CancellationToken cancellationToken)
             where TResult : class
         {
-            var currentHandler = CollectionsMarshal.GetValueRefOrNullRef(this._context.RequestHandlers, request.GetType());
+            Type requestType = request.GetType();
 
-            if (currentHandler is null)
+            var currentHandlerCall = CollectionsMarshal.GetValueRefOrNullRef(this._context.RequestHandlers, requestType);
+
+            if (currentHandlerCall is null)
             {
                 ThrowHelper.ThrowRequestHandlerNotFoundException(
                     $"Can't find an IRequestHandler for type {nameof(request)}");
             }
 
-            var instance = Unsafe.As<IRequestHandler<IRequest<TResult>, TResult>>(currentHandler);
+            var requestProxy = new RequestProxy();
+            requestProxy.Proxy = requestProxy.TryGetCasted(ref request);
 
-            return await instance.HandleAsync(request, cancellationToken);
+            return (TResult)await currentHandlerCall.HandleAsync(requestProxy, cancellationToken);
         }
 
 

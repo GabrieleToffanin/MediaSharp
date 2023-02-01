@@ -3,8 +3,7 @@ using MediaSharp.Core.Attributes;
 
 namespace Tester;
 
-[CallableHandler]
-public partial class NumbersHandler : IRequestHandler<Altro, IEnumerable<Qualcosa>>
+public partial class NumbersHandler
 {
     public List<Qualcosa> Numbers = new()
     {

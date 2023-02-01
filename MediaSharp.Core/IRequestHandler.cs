@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using MediaSharp.Core.Internal;
 
 namespace MediaSharp.Core
 {
@@ -12,7 +13,7 @@ namespace MediaSharp.Core
     /// method
     /// </summary>
     /// <typeparam name="TResponse">Current return type</typeparam>
-    public interface IRequestHandler<TRequest, TResponse>
+    public interface IRequestHandler<TRequest, TResponse> : IWrappableHandler
         where TRequest : IRequest<TResponse>
         where TResponse : class
     {

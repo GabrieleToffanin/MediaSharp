@@ -28,3 +28,5 @@ _ = containerScope.Resolve<IRequestHandler<Bho, Qualcosa>>();
 var mediator = containerScope.Resolve<IMediator>();
 
 var result = await mediator.SendAsync(bho, CancellationToken.None);
+
+Console.WriteLine(result.Id);
