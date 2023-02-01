@@ -12,6 +12,7 @@ namespace MediaSharp.Core.Internal
     public class RequestProxy
     {
         public IRequest<object> Proxy { get; set; }
+
         
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public IRequest<object> TryGetCasted<TResult>(ref IRequest<TResult> current)

@@ -28,12 +28,11 @@ namespace MediaSharp.SourceGenerators.Mediator
                         static (node, _) => node is ClassDeclarationSyntax,
                         static (context, token) =>
                         {
-                            ClassDeclarationSyntax isValidClassCdecl =
-                                (ClassDeclarationSyntax)context.TargetNode;
+                            var isValidClassDecl = (ClassDeclarationSyntax)context.TargetNode;
 
-                            var isValidClassDecl = Execute.TryGetClassInfo(isValidClassCdecl, context, out var namespaceName, out var argumentName);
+                            var infoRetrievalSuccess = Execute.TryGetClassInfo(isValidClassDecl, context, out var namespaceName, out var argumentName);
 
-                            return isValidClassDecl ? new HandlerInfoSyntax(){ClassDelc = isValidClassCdecl, argumentName = argumentName, assemblyInfo = namespaceName} : null;
+                            return infoRetrievalSuccess ? new HandlerInfoSyntax{ClassDelc = isValidClassDecl, argumentName = argumentName, assemblyInfo = namespaceName} : null;
                         }).Where(x => x is not null);
 
             context.RegisterSourceOutput(callableMediatorMethodsInfo.Collect(),
