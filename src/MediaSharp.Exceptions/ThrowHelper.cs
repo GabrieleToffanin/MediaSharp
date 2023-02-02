@@ -1,8 +1,9 @@
-﻿using MediaSharp.Exceptions.Common;
+﻿using System.Runtime.CompilerServices;
+using MediaSharp.Exceptions.Common;
 
 namespace MediaSharp.Exceptions
 {
-    internal static class ThrowHelper
+    public static class ThrowHelper
     {
         public static void ThrowRequestHandlerNotFoundException(string message, Exception ex = null)
         {

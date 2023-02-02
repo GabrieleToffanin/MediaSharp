@@ -13,4 +13,10 @@
     <PackageReference Include="Microsoft.Extensions.DependencyInjection.Abstractions" Version="7.0.0" />
   </ItemGroup>
 
+  <ItemGroup>
+    <ProjectReference Include="..\MediaSharp.Core\MediaSharp.Core.csproj" />
+    <ProjectReference Include="..\MediaSharp.DependencyInjection\MediaSharp.DependencyInjection.csproj" />
+    <ProjectReference Include="..\MediaSharp.SourceGenerators\MediaSharp.SourceGenerators.csproj" ReferenceOutputAssembly="false" OutputItemType="Analyzer" />
+  </ItemGroup>
+
 </Project>
