@@ -13,6 +13,8 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "MediaSharp.SourceGenerators
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Tester", "src\Tester\Tester.csproj", "{9360503A-33B6-4B95-A72F-B16AECDC213C}"
 EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "src", "src", "{C9DD497A-589E-4837-94FB-AAA47A13615B}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -42,6 +44,12 @@ Global
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(NestedProjects) = preSolution
+		{9F279FD5-659D-4FA3-A12D-7EDF4BF7DCE8} = {C9DD497A-589E-4837-94FB-AAA47A13615B}
+		{E3ADF522-EA69-4927-8107-00507F04BFAC} = {C9DD497A-589E-4837-94FB-AAA47A13615B}
+		{CF68DFAE-33FA-47C9-AEF7-D29761C59FA4} = {C9DD497A-589E-4837-94FB-AAA47A13615B}
+		{65C0C384-4F35-42DB-928D-74214AB69695} = {C9DD497A-589E-4837-94FB-AAA47A13615B}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {D90FE41F-BCED-472E-9E85-8B113B9E8878}

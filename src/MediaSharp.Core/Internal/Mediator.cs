@@ -5,36 +5,51 @@ using System.Runtime.CompilerServices;
 using System.Runtime.InteropServices;
 using System.Text;
 using System.Threading.Tasks;
+using MediaSharp.Exceptions;
+using Microsoft.VisualBasic;
 
 namespace MediaSharp.Core.Internal
 {
-    public sealed partial class Mediator : IMediator
+    public sealed class Mediator : IMediator
     {
-        private readonly MediatorContext _context;
+        private readonly IHandlerExecutionPipe _executionPipe;
+        private readonly IHandlerExecutionPipeContext _context;
+        private readonly MediatorContext _mediatorContext;
 
-        public Mediator(MediatorContext context)
+        public Mediator(
+            IHandlerExecutionPipeContext context,
+            IHandlerExecutionPipe executionPipe,
+            MediatorContext mediatorContext)
         {
+            this._executionPipe = executionPipe;
             this._context = context;
+            this._mediatorContext = mediatorContext;
         }
+
+
         public async Task<TResult> SendAsync<TResult>(IRequest<TResult> request, CancellationToken cancellationToken)
             where TResult : class
         {
-            Type requestType = request.GetType();
-
-            var currentHandlerCall = CollectionsMarshal.GetValueRefOrNullRef(this._context.RequestHandlers, requestType);
-
-            if (currentHandlerCall is null)
-            {
-                ThrowHelper.ThrowRequestHandlerNotFoundException(
-                    $"Can't find an IRequestHandler for type {nameof(request)}");
-            }
-
-            var requestProxy = new RequestProxy();
-            requestProxy.Proxy = requestProxy.TryGetCasted(ref request);
-
-            return (TResult)await currentHandlerCall.HandleAsync(requestProxy, cancellationToken);
+            return await ExecutePipeline(request, cancellationToken);
         }
 
+        private async Task<TResult> ExecutePipeline<TResult>(IRequest<TResult> request, CancellationToken cancellationToken)
+            where TResult : class
+        {
+            var morhpedRequest = await this._executionPipe.ExecutePipeAggregate(request, _context, cancellationToken);
 
+            return await TryExecute(morhpedRequest, cancellationToken);
+        }
+
+        private async Task<TResult> TryExecute<TResult>(IRequest<TResult> request, CancellationToken cancellationToken)
+            where TResult : class
+        {
+            var requestType = request.GetType();
+            var currentHandler = CollectionsMarshal.GetValueRefOrNullRef(_mediatorContext.RequestHandlers, requestType);
+
+            var requestProxy = new RequestProxy(Unsafe.As<IRequest<TResult>, IRequest<object>>(ref request));
+
+            return (TResult)await currentHandler.HandleAsync(requestProxy, cancellationToken);
+        }
     }
 }

@@ -9,16 +9,13 @@ using System.Threading.Tasks;
 
 namespace MediaSharp.Core.Internal
 {
-    public class RequestProxy
+    public struct RequestProxy
     {
-        public IRequest<object> Proxy { get; set; }
-
-        
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public IRequest<object> TryGetCasted<TResult>(ref IRequest<TResult> current)
-            where TResult : class
+        public RequestProxy(IRequest<object> request)
         {
-            return Unsafe.As<IRequest<TResult>,IRequest<object>>(ref current);
+            this.Proxy = request;
         }
+
+        public IRequest<object> Proxy { get; set; }
     }
 }

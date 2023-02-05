@@ -5,6 +5,7 @@ using System.Text;
 using System.Threading.Tasks;
 using MediaSharp.Core;
 using MediaSharp.Core.Internal;
+using MediaSharp.Core.Pipe.Core;
 using Microsoft.Extensions.DependencyInjection;
 
 namespace MediaSharp.DependencyInjection
@@ -14,7 +15,16 @@ namespace MediaSharp.DependencyInjection
         public static void UseMediaSharp(this IServiceCollection services)
         {
             services.AddScoped<IMediator, Mediator>();
-            services.AddScoped<MediatorContext>();
+            services.AddSingleton<MediatorContext>();
+        }
+
+        public static void RegisterMediaSharpPipeline(
+            this IServiceCollection services, 
+            Func<HandlerExecutionPipeBuilder, IServiceProvider, HandlerExecutionPipeContext> build)
+        {
+            services.AddSingleton<IHandlerExecutionPipeContext>(sp => build.Invoke(new HandlerExecutionPipeBuilder(), sp));
+            services.AddScoped<HandlerExecutionPipeContext>();
+            services.AddScoped<IHandlerExecutionPipe, HandlerExecutionPipe>();
         }
     }
 }
