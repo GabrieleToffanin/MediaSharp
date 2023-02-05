@@ -1,4 +1,4 @@
-﻿namespace MediaSharp.Core.Internal
+﻿namespace MediaSharp.Core.Pipe.Core
 {
     /// <summary>
     /// Defines the pipe where the request is sent through

@@ -1,7 +1,7 @@
 ﻿using MediaSharp.Core.Model;
 using MediaSharp.Core.Pipe.Core;
 
-namespace MediaSharp.Core.Internal
+namespace MediaSharp.Core.Pipe
 {
     public class HandlerExecutionPipeBuilder : IHandlerExecutionPipeBuilder
     {

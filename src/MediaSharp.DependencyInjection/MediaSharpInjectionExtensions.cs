@@ -5,6 +5,7 @@ using System.Text;
 using System.Threading.Tasks;
 using MediaSharp.Core;
 using MediaSharp.Core.Internal;
+using MediaSharp.Core.Pipe;
 using MediaSharp.Core.Pipe.Core;
 using Microsoft.Extensions.DependencyInjection;
 

@@ -5,7 +5,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace MediaSharp.Core.Internal
+namespace MediaSharp.Core.Pipe.Core
 {
     public interface IHandlerExecutionPipeContext
     {

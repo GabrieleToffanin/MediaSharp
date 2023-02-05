@@ -1,4 +1,6 @@
-﻿namespace MediaSharp.Core.Internal
+﻿using MediaSharp.Core.Pipe.Core;
+
+namespace MediaSharp.Core.Pipe
 {
     public class HandlerExecutionPipe : IHandlerExecutionPipe
     {

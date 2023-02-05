@@ -1,6 +1,7 @@
 ﻿using MediaSharp.Core.Model;
+using MediaSharp.Core.Pipe.Core;
 
-namespace MediaSharp.Core.Internal
+namespace MediaSharp.Core.Pipe
 {
     /// <summary>
     /// Defines the context where the steps are

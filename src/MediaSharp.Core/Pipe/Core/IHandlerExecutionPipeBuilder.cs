@@ -1,5 +1,4 @@
-﻿using MediaSharp.Core.Internal;
-using MediaSharp.Core.Model;
+﻿using MediaSharp.Core.Model;
 
 namespace MediaSharp.Core.Pipe.Core
 {

@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-using MediaSharp.Core.Internal;
+using MediaSharp.Core.Pipe.Core;
 
 namespace MediaSharp.Core
 {
