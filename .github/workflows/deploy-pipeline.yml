@@ -36,7 +36,7 @@ jobs:
     - name: Git checkout
       uses: actions/checkout@v3.3.0
     - name: Add msbuild to PATH
-      uses: microsoft/setup-msbuild@v1.1
+      uses: microsoft/setup-msbuild@v1.1.3
     - name: Build MediaSharp package
       run: dotnet build src\MediaSharp.Core\MediaSharp.Core.Package.csproj -t:restore,build,pack /p:Configuration=Release
       
