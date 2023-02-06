@@ -30,6 +30,7 @@ jobs:
         if-no-files-found: error
   
   build-packages:
+    needs: [build-solution]
     runs-on: windows-2022
     steps:
     - name: Git checkout
@@ -42,6 +43,7 @@ jobs:
     
  # Publish the packages to GitHub packages
   publish-nightlies-github:
+    needs: [build-packages]
     runs-on: windows-2022
     #if: ${{github.event_name == 'push'}}
     steps:
