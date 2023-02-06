@@ -17,7 +17,7 @@ jobs:
     runs-on: windows-2022
     steps:
     - name: Git Checkout on Solution master/MediaSharp
-      uses: actions/checkout@3
+      uses: actions/checkout@v3.3.0
     - name: Add MSBUILD to PATH
       uses: microsoft/setup-msbuild@v1.1
     - name: Build MediaSharp
@@ -34,7 +34,7 @@ jobs:
     runs-on: windows-2022
     steps:
     - name: Git checkout
-      uses: actions/checkout@v3
+      uses: actions/checkout@v3.3.0
     - name: Add msbuild to PATH
       uses: microsoft/setup-msbuild@v1.1
     - name: Build MediaSharp package
