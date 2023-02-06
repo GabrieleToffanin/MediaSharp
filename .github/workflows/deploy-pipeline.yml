@@ -21,7 +21,7 @@ jobs:
     - name: Add MSBUILD to PATH
       uses: microsoft/setup-msbuild@v1.1
     - name: Build MediaSharp
-      run: msbuild MediaSharp.sln -t:restore,build /p:Configuration=${{matrix.configuration}} /p:Platform=${{matrix.platform}}
+      run: msbuild ../../MediaSharp.sln -t:restore,build /p:Configuration=${{matrix.configuration}} /p:Platform=${{matrix.platform}}
     - name: Upload MSBuild binary log
       uses: actions/upload-artifact@v3
       with:
