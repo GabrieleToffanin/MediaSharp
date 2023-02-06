@@ -37,13 +37,16 @@ jobs:
     - name: Add msbuild to PATH
       uses: microsoft/setup-msbuild@v1.1
     - name: Build MediaSharp package
-      run: dotnet build src\MediaSharp.Core.Package\MediaSharp.Core.Package.msbuildproj -c Release
-      
-  run-tests:
-    needs: [build-solution]
-    strategy:
-      matrix:
-        framework: [net7.0]
-    runs-on: windows-2022
+      run: dotnet build src\MediaSharp.Core\MediaSharp.Core.Package.csproj -t:restore,build,pack /p:Configuration=Release
       
     
+ # Publish the packages to GitHub packages
+  publish-nightlies-github:
+    runs-on: windows-2022
+    #if: ${{github.event_name == 'push'}}
+    steps:
+    - uses: actions/download-artifact@v3
+      with:
+        name: nuget_packages
+        path: artifacts
+    - run: dotnet nuget push "artifacts\*.nupkg" --source "https://nuget.pkg.github.com/${{github.repository_owner}}/index.json" --api-key ${{secrets.PACKAGE_TOKEN}} --skip-duplicate
