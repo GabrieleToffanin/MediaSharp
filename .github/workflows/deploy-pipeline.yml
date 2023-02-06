@@ -1,0 +1,49 @@
+name: MediaSharpBuild
+
+on: [push, pull_request]
+
+env: 
+  EXCLUDE_RUN_ID_FROM_PACKAGE: false
+  EXCLUDE_SUFFIX_FROM_VERSION: false
+  
+jobs:
+
+  #Build MediaSharp
+  build-solution:
+    strategy:
+      matrix:
+        configuration: [Debug, Release]
+        platform: [x64]
+    runs-on: windows-2022
+    steps:
+    - name: Git Checkout on Solution master/MediaSharp
+      uses: actions/checkout@3
+    - name: Add MSBUILD to PATH
+      uses: microsoft/setup-msbuild@v1.1
+    - name: Build MediaSharp
+      uses: msbuild -t:restore,build /p:Configuration=${{matrix.configuration}} /p:Platform=${{matrix.platform}} /b1
+    - name: Upload MSBuild binary log
+      uses: actions/upload-artifact@v3
+      with:
+        name: msbuild_log_${{matrix.configuration}}_${{matrix.platform}}
+        path: msbuild.binlog
+        if-no-files-found: error
+  
+  build-packages:
+    runs-on: windows-2022
+    steps:
+    - name: Git checkout
+      uses: actions/checkout@v3
+    - name: Add msbuild to PATH
+      uses: microsoft/setup-msbuild@v1.1
+    - name: Build MediaSharp package
+      run: dotnet build src\MediaSharp.Core.Package\MediaSharp.Core.Package.msbuildproj -c Release
+      
+  run-tests:
+    needs: [build-solution]
+    strategy:
+      matrix:
+        framework: [net7.0]
+    runs-on: windows-2022
+      
+    
