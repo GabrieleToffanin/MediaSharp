@@ -9,13 +9,21 @@ using System.Threading.Tasks;
 
 namespace MediaSharp.Core.Internal
 {
-    public struct RequestProxy
+    /// <summary>
+    /// Simple readonly struct
+    /// that serves the purpose of wrapping the current <see cref="IRequest{TResult}"/>
+    /// into one more generic.
+    /// </summary>
+    public readonly struct RequestProxy
     {
         public RequestProxy(IRequest<object> request)
         {
             this.Proxy = request;
         }
 
-        public IRequest<object> Proxy { get; set; }
+        /// <summary>
+        /// Current hold <see cref="Proxy"/>
+        /// </summary>
+        public IRequest<object> Proxy { get; }
     }
 }

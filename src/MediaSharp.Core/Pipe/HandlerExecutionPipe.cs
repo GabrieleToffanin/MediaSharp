@@ -2,8 +2,10 @@
 
 namespace MediaSharp.Core.Pipe
 {
+    /// <inheritdoc />
     public class HandlerExecutionPipe : IHandlerExecutionPipe
     {
+        /// <inheritdoc />
         public async Task<IRequest<TResult>> ExecutePipeAggregate<TResult>(
             IRequest<TResult> request,
             IHandlerExecutionPipeContext context,
