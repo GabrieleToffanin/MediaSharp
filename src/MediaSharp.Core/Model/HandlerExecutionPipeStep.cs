@@ -26,6 +26,7 @@
             throw new NotImplementedException();
         }
 
+        //Not implemented at the moment.
         public virtual IRequest<TResult> Execute<TResult>(IRequest<TResult> request)
             where TResult : class
         {

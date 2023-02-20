@@ -30,9 +30,9 @@ namespace MediaSharp.SourceGenerators.Mediator
                         {
                             var isValidClassDecl = (ClassDeclarationSyntax)context.TargetNode;
 
-                            var infoRetrievalSuccess = Execute.TryGetClassInfo(isValidClassDecl, context, out var namespaceName, out var argumentName);
+                            var infoRetrievalSuccess = Execute.TryGetClassInfo(isValidClassDecl, context, out var namespaceName, out var argumentName, out var containingNamespace);
 
-                            return infoRetrievalSuccess ? new HandlerInfoSyntax{ClassDelc = isValidClassDecl, argumentName = argumentName, assemblyInfo = namespaceName} : null;
+                            return infoRetrievalSuccess ? new HandlerInfoSyntax{ClassDelc = isValidClassDecl, RequestFull = argumentName, Assembly = namespaceName, Namespace = containingNamespace} : null;
                         }).Where(x => x is not null);
 
             context.RegisterSourceOutput(callableMediatorMethodsInfo.Collect(),

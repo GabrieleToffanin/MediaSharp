@@ -9,7 +9,8 @@ namespace MediaSharp.SourceGenerators
     internal class HandlerInfoSyntax
     {
         internal ClassDeclarationSyntax ClassDelc { get; set; }
-        internal IAssemblySymbol assemblyInfo { get; set; }
-        internal string argumentName { get; set; }
+        internal IAssemblySymbol Assembly { get; set; }
+        internal INamespaceSymbol Namespace { get; set; }
+        internal string RequestFull { get; set; }
     }
 }

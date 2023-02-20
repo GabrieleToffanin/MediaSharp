@@ -16,8 +16,9 @@ namespace MediaSharp.SourceGenerators.Mediator
         public static bool TryGetClassInfo(
             ClassDeclarationSyntax classSyntax,
             GeneratorAttributeSyntaxContext ctx,
-            out IAssemblySymbol namespaceName,
-            out string argumentName)
+            out IAssemblySymbol assemblySymbol,
+            out string argumentName,
+            out INamespaceSymbol containingNa)
         {
             var classSymbol = ModelExtensions.GetDeclaredSymbol(ctx.SemanticModel, classSyntax) as ITypeSymbol;
 
@@ -37,7 +38,8 @@ namespace MediaSharp.SourceGenerators.Mediator
                 argumentName = $"{fullArgumentNamespace}{separatorToken}{fullArgumentName}";
             }
 
-            namespaceName = classSymbol.ContainingAssembly;
+            assemblySymbol = classSymbol.ContainingAssembly;
+            containingNa = classSymbol.ContainingNamespace;
 
             return isClassMediaRegistrable;
         }
@@ -67,7 +69,7 @@ namespace MediaSharp.SourceGenerators.Mediator
 
                 var decl =
                     NamespaceDeclaration(
-                        IdentifierName(classSymbol.assemblyInfo.Identity.Name)).WithMembers(
+                        IdentifierName(classSymbol.Namespace.OriginalDefinition.ToString())).WithMembers(
                         SingletonList<MemberDeclarationSyntax>(
                             ClassDeclaration(classSymbol.ClassDelc.Identifier)
                                 .WithModifiers(
@@ -77,7 +79,7 @@ namespace MediaSharp.SourceGenerators.Mediator
                                             Token(SyntaxKind.PublicKeyword),
                                             Token(SyntaxKind.PartialKeyword)
                                         }))
-                                .AddMembers(ctorSyntax, CreateMethodImplSyntax(classSymbol.argumentName))));
+                                .AddMembers(ctorSyntax, CreateMethodImplSyntax(classSymbol.RequestFull))));
 
                 memberDeclSyntax = memberDeclSyntax.Add(decl);
             }
