@@ -7,12 +7,6 @@ namespace Tester;
 [CallableHandler]
 public partial class BhoHandler : IRequestHandler<Bho, Qualcosa>
 {
-
-    public BhoHandler(Altro altro)
-    {
-        
-    }
-
     private List<Qualcosa> cose = new List<Qualcosa>()
     {
         new Qualcosa()

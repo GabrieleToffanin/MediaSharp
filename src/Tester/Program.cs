@@ -1,19 +1,29 @@
 ﻿using Autofac;
 using Autofac.Extensions.DependencyInjection;
 using MediaSharp.Core;
-using MediaSharp.Core.Internal;
+using MediaSharp.Core.Model;
 using MediaSharp.DependencyInjection;
 using Microsoft.Extensions.DependencyInjection;
 using Tester;
 
-
 var cheneso = new Bho(1);
 
+
+
+
+using var scope = CreateContainer().BeginLifetimeScope();
+var mediator = scope.Resolve<IMediator>();
+
+var result = await mediator.SendAsync(cheneso, CancellationToken.None);
+
+Console.WriteLine(result.Id);
 IContainer CreateContainer()
 {
     var contBuilder = new ContainerBuilder();
     var services = new ServiceCollection();
     services.UseMediaSharp();
+    services.RegisterMediaSharpPipeline((builder, sp) => builder.AddStep(new ResolvingStep(sp)).Build());
+
     services.AddScoped<IRequestHandler<Bho, Qualcosa>, BhoHandler>();
 
     contBuilder.Populate(services);
@@ -21,12 +31,21 @@ IContainer CreateContainer()
     return contBuilder.Build();
 }
 
-using var containerScope = CreateContainer().BeginLifetimeScope();
+namespace Tester
+{
+    class ResolvingStep : HandlerExecutionPipeStep
+    {
+        private readonly IServiceProvider serviceProvider;
+        public ResolvingStep(IServiceProvider serviceProvider)
+        {
+            this.serviceProvider = serviceProvider;
+        }
 
-var bho = new Bho(1);
-_ = containerScope.Resolve<IRequestHandler<Bho, Qualcosa>>();
-var mediator = containerScope.Resolve<IMediator>();
+        public override async Task<IRequest<TResult>> ExecuteAsync<TResult>(IRequest<TResult> request, CancellationToken cancellationToken)
+        {
+            serviceProvider.GetService<IRequestHandler<Bho, Qualcosa>>();
 
-var result = await mediator.SendAsync(bho, CancellationToken.None);
-
-Console.WriteLine(result.Id);
+            return request;
+        }
+    }
+}
