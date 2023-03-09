@@ -1,6 +1,5 @@
 ﻿using MediaSharp.Core;
 using MediaSharp.Core.Attributes;
-using MediaSharp.Core.Internal;
 
 namespace Tester;
 

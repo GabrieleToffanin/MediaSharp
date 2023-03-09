@@ -8,9 +8,6 @@ using Tester;
 
 var cheneso = new Bho(1);
 
-
-
-
 using var scope = CreateContainer().BeginLifetimeScope();
 var mediator = scope.Resolve<IMediator>();
 

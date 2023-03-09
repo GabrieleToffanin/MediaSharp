@@ -1,14 +1,8 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
+﻿using MediaSharp.Core.Model;
+using MediaSharp.Core.Pipe;
+using MediaSharp.Core.Pipe.Core;
 using System.Runtime.CompilerServices;
 using System.Runtime.InteropServices;
-using System.Text;
-using System.Threading.Tasks;
-using MediaSharp.Core.Model;
-using MediaSharp.Core.Pipe.Core;
-using MediaSharp.Exceptions;
-using Microsoft.VisualBasic;
 
 namespace MediaSharp.Core.Internal
 {
@@ -26,7 +20,7 @@ namespace MediaSharp.Core.Internal
         /// <see cref="HandlerExecutionPipeStep"/>
         /// get loaded.
         /// </summary>
-        private readonly IHandlerExecutionPipeContext _context;
+        private readonly HandlerExecutionPipeContext _context;
 
         /// <summary>
         /// From this the Mediator will retrieve the correct handler
@@ -35,7 +29,7 @@ namespace MediaSharp.Core.Internal
         private readonly MediatorContext _mediatorContext;
 
         public Mediator(
-            IHandlerExecutionPipeContext context,
+            HandlerExecutionPipeContext context,
             IHandlerExecutionPipe executionPipe,
             MediatorContext mediatorContext)
         {
@@ -43,7 +37,7 @@ namespace MediaSharp.Core.Internal
             this._context = context;
             this._mediatorContext = mediatorContext;
         }
-        
+
         /// <inheritdoc />
         public async Task<TResult> SendAsync<TResult>(IRequest<TResult> request, CancellationToken cancellationToken)
             where TResult : class
