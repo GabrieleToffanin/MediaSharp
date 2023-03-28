@@ -1,33 +1,33 @@
-﻿using MediaSharp.Core.Model;
-using MediaSharp.Core.Pipe.Core;
+﻿using MediaSharp.Core.Pipe.Core;
+using MediaSharp.Core.Pipe.Execution;
 
-namespace MediaSharp.Core.Pipe
+namespace MediaSharp.Core.Pipe;
+
+/// <summary>
+/// <inheritdoc cref="IHandlerExecutionPipeBuilder"/>
+/// </summary>
+public class HandlerExecutionPipeBuilder
 {
-    /// <summary>
-    /// <inheritdoc cref="IHandlerExecutionPipeBuilder"/>
-    /// </summary>
-    public class HandlerExecutionPipeBuilder : IHandlerExecutionPipeBuilder
+    private readonly List<IExecutionPipeStep> _steps = new();
+
+    /// <inheritdoc />
+    public ExecutionPipeContainer Build()
     {
-        private readonly List<HandlerExecutionPipeStep> _steps = new();
+        return new ExecutionPipeContainer(_steps);
+    }
 
-        /// <inheritdoc />
-        public HandlerExecutionPipeContext Build()
-        {
-            return new HandlerExecutionPipeContext(_steps);
-        }
-        /// <inheritdoc />
-        public IHandlerExecutionPipeBuilder AddSteps(params HandlerExecutionPipeStep[] steps)
-        {
-            _steps.AddRange(steps);
+    /// <inheritdoc />
+    public HandlerExecutionPipeBuilder AddSteps(params IExecutionPipeStep[] steps)
+    {
+        _steps.AddRange(steps);
 
-            return this;
-        }
-        /// <inheritdoc />
-        public IHandlerExecutionPipeBuilder AddStep(HandlerExecutionPipeStep step)
-        {
-            _steps.Add(step);
+        return this;
+    }
+    /// <inheritdoc />
+    public HandlerExecutionPipeBuilder AddStep(IExecutionPipeStep step)
+    {
+        _steps.Add(step);
 
-            return this;
-        }
+        return this;
     }
 }

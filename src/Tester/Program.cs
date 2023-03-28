@@ -2,6 +2,7 @@
 using Autofac.Extensions.DependencyInjection;
 using MediaSharp.Core;
 using MediaSharp.Core.Model;
+using MediaSharp.Core.Pipe.Core;
 using MediaSharp.DependencyInjection;
 using Microsoft.Extensions.DependencyInjection;
 using Tester;
@@ -19,7 +20,11 @@ IContainer CreateContainer()
     var contBuilder = new ContainerBuilder();
     var services = new ServiceCollection();
     services.UseMediaSharp();
-    services.RegisterMediaSharpPipeline((builder, sp) => builder.AddStep(new ResolvingStep(sp)).Build());
+    services.RegisterMediaSharpPipeline((builder, sp) =>
+        builder.AddStep(new ResolvingStep(sp))
+               .Build());
+
+    services.AddTransient<IExecutionPipeStep, ResolvingStep>();
 
     services.AddScoped<IRequestHandler<Bho, Qualcosa>, BhoHandler>();
 
@@ -30,7 +35,7 @@ IContainer CreateContainer()
 
 namespace Tester
 {
-    class ResolvingStep : HandlerExecutionPipeStep
+    class ResolvingStep : IExecutionPipeStep
     {
         private readonly IServiceProvider serviceProvider;
         public ResolvingStep(IServiceProvider serviceProvider)
@@ -38,11 +43,15 @@ namespace Tester
             this.serviceProvider = serviceProvider;
         }
 
-        public override async Task<IRequest<TResult>> ExecuteAsync<TResult>(IRequest<TResult> request, CancellationToken cancellationToken)
+        /// <inheritdoc />
+        public async Task<TResult> ExecutePipelineStep<TResult>(
+            IRequest<TResult> request,
+            ExecutionPipeStepDelegate<TResult> next,
+            CancellationToken cancellationToken) where TResult : class
         {
             serviceProvider.GetService<IRequestHandler<Bho, Qualcosa>>();
 
-            return request;
+            return await next();
         }
     }
 }

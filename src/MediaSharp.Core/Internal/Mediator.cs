@@ -1,6 +1,6 @@
 ﻿using MediaSharp.Core.Model;
-using MediaSharp.Core.Pipe;
 using MediaSharp.Core.Pipe.Core;
+using MediaSharp.Core.Pipe.Execution;
 using System.Runtime.CompilerServices;
 using System.Runtime.InteropServices;
 
@@ -13,14 +13,7 @@ namespace MediaSharp.Core.Internal
         /// This is the execution pipe, that has the duty of executing
         /// the <see cref="HandlerExecutionPipeStep"/> collection.
         /// </summary>
-        private readonly IHandlerExecutionPipe _executionPipe;
-
-        /// <summary>
-        /// This is the context from where the
-        /// <see cref="HandlerExecutionPipeStep"/>
-        /// get loaded.
-        /// </summary>
-        private readonly HandlerExecutionPipeContext _context;
+        private readonly ExecutionPipeContainer _container;
 
         /// <summary>
         /// From this the Mediator will retrieve the correct handler
@@ -29,12 +22,10 @@ namespace MediaSharp.Core.Internal
         private readonly MediatorContext _mediatorContext;
 
         public Mediator(
-            HandlerExecutionPipeContext context,
-            IHandlerExecutionPipe executionPipe,
+            ExecutionPipeContainer container,
             MediatorContext mediatorContext)
         {
-            this._executionPipe = executionPipe;
-            this._context = context;
+            this._container = container;
             this._mediatorContext = mediatorContext;
         }
 
@@ -48,38 +39,25 @@ namespace MediaSharp.Core.Internal
         /// <summary>
         /// Gets the current <see cref="IRequest{TResult}"/>
         /// from the mediator and transforms through
-        /// the <see cref="IHandlerExecutionPipe"/>
+        /// the <see cref="IExecutionPipeStep"/>
         /// </summary>
         /// <typeparam name="TResult">Current espected response type</typeparam>
         /// <param name="request">The current <see cref="IRequest{TResult}"/></param>
         /// <param name="cancellationToken">Cancellation token</param>
         /// <returns><see cref="TResult"/></returns>
-        private async Task<TResult> ExecutePipeline<TResult>(IRequest<TResult> request, CancellationToken cancellationToken)
+        private async Task<TResult> ExecutePipeline<TResult>(
+            IRequest<TResult> request,
+            CancellationToken cancellationToken)
             where TResult : class
         {
-            var morhpedRequest = await this._executionPipe.ExecutePipeAggregate(request, _context, cancellationToken);
-
-            return await TryExecute(morhpedRequest, cancellationToken);
-        }
-
-        /// <summary>
-        /// Final step of the Mediator,
-        /// is where the transformed request get finally
-        /// handled by the corresponding <see cref="IRequestHandler{TRequest,TResponse}"/>
-        /// </summary>
-        /// <typeparam name="TResult">Expected result Type</typeparam>
-        /// <param name="request">Current <see cref="IRequest{TResult}"/></param>
-        /// <param name="cancellationToken">Cancellation token.</param>
-        /// <returns>A <see cref="TResult"/></returns>
-        private async Task<TResult> TryExecute<TResult>(IRequest<TResult> request, CancellationToken cancellationToken)
-            where TResult : class
-        {
-            var requestType = request.GetType();
-            var currentHandler = CollectionsMarshal.GetValueRefOrNullRef(_mediatorContext.RequestHandlers, requestType);
-
             var requestProxy = new RequestProxy(Unsafe.As<IRequest<TResult>, IRequest<object>>(ref request));
 
-            return (TResult)await currentHandler.HandleAsync(requestProxy, cancellationToken);
+            async Task<TResult> Handler() =>
+                (TResult)await CollectionsMarshal.GetValueRefOrNullRef(_mediatorContext.RequestHandlers, request.GetType()).HandleAsync(requestProxy, cancellationToken);
+
+            return await this._container.Starter.Aggregate((ExecutionPipeStepDelegate<TResult>)Handler,
+                (next, pipeline) =>
+                    () => pipeline.ExecutePipelineStep(request, next, cancellationToken))();
         }
     }
 }
