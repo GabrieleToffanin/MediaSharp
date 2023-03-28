@@ -1,0 +1,16 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>net7.0</TargetFramework>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <Nullable>enable</Nullable>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\src\MediaSharp.Core\MediaSharp.Core.csproj" />
+    <ProjectReference Include="..\src\MediaSharp.DependencyInjection\MediaSharp.DependencyInjection.csproj" />
+    <ProjectReference Include="..\src\MediaSharp.Exceptions\MediaSharp.Exceptions.csproj" />
+    <ProjectReference Include="..\src\MediaSharp.SourceGenerators\MediaSharp.SourceGenerators.csproj" />
+  </ItemGroup>
+
+</Project>
