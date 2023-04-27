@@ -1,46 +1,20 @@
-﻿using Autofac;
-using Autofac.Extensions.DependencyInjection;
+﻿using BenchmarkDotNet.Running;
 using MediaSharp.Core;
 using MediaSharp.Core.Model;
 using MediaSharp.Core.Pipe.Core;
-using MediaSharp.DependencyInjection;
 using Microsoft.Extensions.DependencyInjection;
-using Tester;
+using Tester.Benchmark;
 
-var cheneso = new Bho(1);
-
-using var scope = CreateContainer().BeginLifetimeScope();
-var mediator = scope.Resolve<IMediator>();
-
-var result = await mediator.SendAsync(cheneso, CancellationToken.None);
-
-Console.WriteLine(result.Id);
-IContainer CreateContainer()
-{
-    var contBuilder = new ContainerBuilder();
-    var services = new ServiceCollection();
-    services.UseMediaSharp();
-    services.RegisterMediaSharpPipeline((builder, sp) =>
-        builder.AddStep(new ResolvingStep(sp))
-               .Build());
-
-    services.AddTransient<IExecutionPipeStep, ResolvingStep>();
-
-    services.AddScoped<IRequestHandler<Bho, Qualcosa>, BhoHandler>();
-
-    contBuilder.Populate(services);
-
-    return contBuilder.Build();
-}
+var summary = BenchmarkRunner.Run<MediaSharpBenchmarks>();
 
 namespace Tester
 {
     class ResolvingStep : IExecutionPipeStep
     {
-        private readonly IServiceProvider serviceProvider;
+        private readonly IServiceProvider _serviceProvider;
         public ResolvingStep(IServiceProvider serviceProvider)
         {
-            this.serviceProvider = serviceProvider;
+            this._serviceProvider = serviceProvider;
         }
 
         /// <inheritdoc />
@@ -49,9 +23,43 @@ namespace Tester
             ExecutionPipeStepDelegate<TResult> next,
             CancellationToken cancellationToken) where TResult : class
         {
-            serviceProvider.GetService<IRequestHandler<Bho, Qualcosa>>();
+            _serviceProvider.GetService<IRequestHandler<Bho, Qualcosa>>();
 
             return await next();
+        }
+    }
+
+    class LoggingStep : IExecutionPipeStep
+    {
+        private readonly ILogger _logger;
+        public LoggingStep(ILogger logger)
+        {
+            this._logger = logger;
+        }
+
+        /// <inheritdoc />
+        public async Task<TResult> ExecutePipelineStep<TResult>(
+            IRequest<TResult> request,
+            ExecutionPipeStepDelegate<TResult> next,
+            CancellationToken cancellationToken) where TResult : class
+        {
+            this._logger.Log("Ti amo tanto amore mio");
+
+            return await next();
+        }
+    }
+
+    interface ILogger
+    {
+        void Log(string message);
+    }
+
+    class CustomLogger : ILogger
+    {
+        /// <inheritdoc />
+        public void Log(string message)
+        {
+            Console.WriteLine(message);
         }
     }
 }

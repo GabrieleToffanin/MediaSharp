@@ -13,20 +13,20 @@ public class HandlerExecutionPipeBuilder
     /// <inheritdoc />
     public ExecutionPipeContainer Build()
     {
-        return new ExecutionPipeContainer(_steps);
+        return new ExecutionPipeContainer(this._steps);
     }
 
     /// <inheritdoc />
     public HandlerExecutionPipeBuilder AddSteps(params IExecutionPipeStep[] steps)
     {
-        _steps.AddRange(steps);
+        this._steps.AddRange(steps);
 
         return this;
     }
     /// <inheritdoc />
     public HandlerExecutionPipeBuilder AddStep(IExecutionPipeStep step)
     {
-        _steps.Add(step);
+        this._steps.Add(step);
 
         return this;
     }

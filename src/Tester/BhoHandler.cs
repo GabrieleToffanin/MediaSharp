@@ -16,6 +16,6 @@ public partial class BhoHandler : IRequestHandler<Bho, Qualcosa>
 
     public async Task<Qualcosa> HandleAsync(Bho request, CancellationToken cancellationToken)
     {
-        return await Task.Run(() => cose.FirstOrDefault(x => x.Id == request.Id), cancellationToken);
+        return await Task.Run(() => this.cose.FirstOrDefault(x => x.Id == request.Id)!, cancellationToken);
     }
 }

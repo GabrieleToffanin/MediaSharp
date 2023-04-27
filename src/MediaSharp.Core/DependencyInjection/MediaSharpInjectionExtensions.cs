@@ -1,11 +1,10 @@
-﻿using MediaSharp.Core;
-using MediaSharp.Core.Internal;
+﻿using MediaSharp.Core.Internal;
 using MediaSharp.Core.Pipe;
 using MediaSharp.Core.Pipe.Core;
 using MediaSharp.Core.Pipe.Execution;
 using Microsoft.Extensions.DependencyInjection;
 
-namespace MediaSharp.DependencyInjection;
+namespace MediaSharp.Core.DependencyInjection;
 
 /// <summary>
 /// Extensions for DI for enabling the usage of MediaSharp
