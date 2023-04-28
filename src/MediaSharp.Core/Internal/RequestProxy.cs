@@ -5,15 +5,10 @@
 /// that serves the purpose of wrapping the current <see cref="IRequest{TResult}"/>
 /// into one more generic.
 /// </summary>
-public readonly struct RequestProxy
+public readonly record struct RequestProxy(IRequest<object> Proxy)
 {
-    public RequestProxy(IRequest<object> request)
-    {
-        this.Proxy = request;
-    }
-
     /// <summary>
     /// Current hold <see cref="Proxy"/>
     /// </summary>
-    public IRequest<object> Proxy { get; }
+    public IRequest<object> Proxy { get; } = Proxy;
 }

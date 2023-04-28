@@ -1,5 +1,6 @@
 ﻿using MediaSharp.Core.Internal;
-using System.Collections.Concurrent;
+
+#pragma warning disable CS0618
 
 namespace MediaSharp.Core;
 
@@ -8,7 +9,7 @@ namespace MediaSharp.Core;
 /// </summary>
 public class MediatorContext
 {
-    public ConcurrentDictionary<Type, IWrappableHandler> RequestHandlers { get; } = new();
+    public Dictionary<Type, IWrappableHandler> RequestHandlers { get; } = new();
 
     /// <summary>
     /// Adds an handler inside the <see cref="RequestHandlers"/> collection
