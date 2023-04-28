@@ -1,17 +1,14 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using System.ComponentModel;
 
-namespace MediaSharp.Core.Internal
+namespace MediaSharp.Core.Internal;
+
+/// <summary>
+/// Internal interface, used for wrapping in a more generic
+/// type the current handler
+/// </summary>
+[Obsolete("This is not intended to be used directly to the user - Source Generator needs this.")]
+[EditorBrowsable(EditorBrowsableState.Never)]
+public interface IWrappableHandler
 {
-    /// <summary>
-    /// Internal interface, used for wrapping in a more generic
-    /// type the current handler
-    /// </summary>
-    public interface IWrappableHandler
-    {
-        Task<object> HandleAsync(RequestProxy request, CancellationToken cancellationToken);
-    }
+    Task<object> HandleAsync(RequestProxy request, CancellationToken cancellationToken);
 }

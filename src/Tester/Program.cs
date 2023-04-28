@@ -1,57 +1,35 @@
-﻿using Autofac;
-using Autofac.Extensions.DependencyInjection;
-using MediaSharp.Core;
-using MediaSharp.Core.Model;
-using MediaSharp.Core.Pipe.Core;
-using MediaSharp.DependencyInjection;
-using Microsoft.Extensions.DependencyInjection;
-using Tester;
+﻿using BenchmarkDotNet.Running;
+using Tester.Benchmark;
 
-var cheneso = new Bho(1);
+var summary = BenchmarkRunner.Run<MediaSharpBenchmarks>();
 
-using var scope = CreateContainer().BeginLifetimeScope();
-var mediator = scope.Resolve<IMediator>();
+//var bho = new Bho(1);
 
-var result = await mediator.SendAsync(cheneso, CancellationToken.None);
+//await using var scope = CreateContainer().BeginLifetimeScope();
+//scope.Resolve<IRequestHandler<Bho, Qualcosa>>();
+//var mediator = scope.Resolve<IMediator>();
 
-Console.WriteLine(result.Id);
-IContainer CreateContainer()
-{
-    var contBuilder = new ContainerBuilder();
-    var services = new ServiceCollection();
-    services.UseMediaSharp();
-    services.RegisterMediaSharpPipeline((builder, sp) =>
-        builder.AddStep(new ResolvingStep(sp))
-               .Build());
+//var result = await mediator.SendAsync(bho, CancellationToken.None);
+//result = await mediator.SendAsync(bho, CancellationToken.None);
+//result = await mediator.SendAsync(bho, CancellationToken.None);
+//result = await mediator.SendAsync(bho, CancellationToken.None);
+//result = await mediator.SendAsync(bho, CancellationToken.None);
+//result = await mediator.SendAsync(bho, CancellationToken.None);
 
-    services.AddTransient<IExecutionPipeStep, ResolvingStep>();
+//Console.WriteLine(result);
 
-    services.AddScoped<IRequestHandler<Bho, Qualcosa>, BhoHandler>();
+//IContainer CreateContainer()
+//{
+//    var contBuilder = new ContainerBuilder();
+//    var services = new ServiceCollection();
+//    services.UseMediaSharp();
 
-    contBuilder.Populate(services);
+//    services.RegisterMediaSharpPipeline((builder, sp) =>
+//        builder.Build());
 
-    return contBuilder.Build();
-}
+//    services.AddScoped<IRequestHandler<Bho, Qualcosa>, BhoHandler>();
 
-namespace Tester
-{
-    class ResolvingStep : IExecutionPipeStep
-    {
-        private readonly IServiceProvider serviceProvider;
-        public ResolvingStep(IServiceProvider serviceProvider)
-        {
-            this.serviceProvider = serviceProvider;
-        }
+//    contBuilder.Populate(services);
 
-        /// <inheritdoc />
-        public async Task<TResult> ExecutePipelineStep<TResult>(
-            IRequest<TResult> request,
-            ExecutionPipeStepDelegate<TResult> next,
-            CancellationToken cancellationToken) where TResult : class
-        {
-            serviceProvider.GetService<IRequestHandler<Bho, Qualcosa>>();
-
-            return await next();
-        }
-    }
-}
+//    return contBuilder.Build();
+//}
