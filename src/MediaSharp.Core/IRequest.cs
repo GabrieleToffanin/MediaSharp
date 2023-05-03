@@ -5,7 +5,7 @@
 /// send to the corresponding 
 /// </summary>
 /// <typeparam name="TResult">Query type return</typeparam>
-public interface IRequest<TResult>
+public interface IRequest<in TResult>
     where TResult : class
 {
 }

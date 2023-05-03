@@ -44,13 +44,13 @@ public class MediaSharpBenchmarks
         }
     }
 
-    [Benchmark(Baseline = true)]
+    [Benchmark]
     public async Task<Qualcosa> SendAsyncMediaSharp()
     {
         return await this._mediator.SendAsync(this._bho, CancellationToken.None);
     }
 
-    //[Benchmark]
+    //[Benchmark(Baseline = true)]
     //public async Task<Qualcosa> SendAsyncMediatR()
     //{
     //    return await this._mediatorR.Send(this._mediatrBho, CancellationToken.None);

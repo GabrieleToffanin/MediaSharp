@@ -10,5 +10,5 @@ namespace MediaSharp.Core.Internal;
 [EditorBrowsable(EditorBrowsableState.Never)]
 public interface IWrappableHandler
 {
-    Task<object> HandleAsync(RequestProxy request, CancellationToken cancellationToken);
+    Task<object> HandleAsync(IRequest<object> request, CancellationToken cancellationToken);
 }
