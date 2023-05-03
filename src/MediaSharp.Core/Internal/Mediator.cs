@@ -39,13 +39,15 @@ internal sealed class Mediator : IMediator
     {
         var requestType = request.GetType();
 
-        var handler = this._mediatorContext.RequestHandlers[requestType];
+        var exists = this._mediatorContext.RequestHandlers.TryGetValue(requestType, out var handler);
+
+        if (!exists)
+            handler = this._mediatorContext.Resolve<TResult>(requestType);
 
         var proxy = Unsafe.As<IRequest<TResult>, IRequest<object>>(ref request);
 
         if (this._container is { Starter.Count: > 0 })
             return await this.ExecutePipeline(request, handler!, proxy, cancellationToken);
-
 
         return (await handler!.HandleAsync(proxy, cancellationToken) as TResult)!;
     }
@@ -67,9 +69,14 @@ internal sealed class Mediator : IMediator
         IWrappableHandler handler,
         IRequest<object> requestStarter,
         CancellationToken cancellationToken)
-            where TResult : class
-                => await this._container.Starter.Aggregate((ExecutionPipeStepDelegate<TResult>)
-                        await handler!.HandleAsync(requestStarter, cancellationToken),
-                        (next, pipeline) =>
-                            () => pipeline.ExecutePipelineStep(request, next, cancellationToken))();
+        where TResult : class
+    {
+        async Task<TResult> Handler() =>
+         await handler.HandleAsync(requestStarter, cancellationToken) as TResult;
+
+        return await this._container.Starter.Aggregate(
+            (ExecutionPipeStepDelegate<TResult>)Handler,
+            (next, pipeline) =>
+                () => pipeline.ExecutePipelineStep(request, next, cancellationToken))();
+    }
 }

@@ -7,9 +7,15 @@ namespace MediaSharp.Core;
 /// <summary>
 /// Context used by the source generator for adding the handlers into a collection of them
 /// </summary>
-public class MediatorContext
+public sealed class MediatorContext
 {
-    public Dictionary<Type, IWrappableHandler> RequestHandlers { get; } = new();
+    internal Dictionary<Type, IWrappableHandler> RequestHandlers { get; } = new();
+    private readonly IServiceProvider _serviceProvider;
+
+    public MediatorContext(IServiceProvider serviceProvider)
+    {
+        this._serviceProvider = serviceProvider;
+    }
 
     /// <summary>
     /// Adds an handler inside the <see cref="RequestHandlers"/> collection
@@ -23,5 +29,13 @@ public class MediatorContext
     {
         if (!this.RequestHandlers.ContainsKey(typeof(TRequest)))
             this.RequestHandlers[typeof(TRequest)] = handler;
+    }
+
+    internal IWrappableHandler Resolve<TResult>(Type requestType)
+        where TResult : class
+    {
+        var resolvedType = typeof(IRequestHandler<,>).MakeGenericType(requestType, typeof(TResult));
+
+        return (this._serviceProvider.GetService(resolvedType) as IWrappableHandler)!;
     }
 }

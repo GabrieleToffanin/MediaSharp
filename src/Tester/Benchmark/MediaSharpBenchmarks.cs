@@ -3,6 +3,8 @@ using Autofac.Extensions.DependencyInjection;
 using BenchmarkDotNet.Attributes;
 using MediaSharp.Core;
 using MediaSharp.Core.DependencyInjection;
+using MediaSharp.Core.Model;
+using MediaSharp.Core.Pipe.Core;
 using Microsoft.Extensions.DependencyInjection;
 
 namespace Tester.Benchmark;
@@ -22,7 +24,6 @@ public class MediaSharpBenchmarks
         this._mediatrBho = new MediatRBho(1);
 
         var scope = CreateContainer().BeginLifetimeScope();
-        scope.Resolve<IRequestHandler<Bho, Qualcosa>>();
         this._mediator = scope.Resolve<IMediator>();
         this._mediatorR = scope.Resolve<MediatR.IMediator>();
 
@@ -34,7 +35,7 @@ public class MediaSharpBenchmarks
             services.AddMediatR(cfg => cfg.RegisterServicesFromAssemblyContaining<Program>());
 
             services.RegisterMediaSharpPipeline((builder, sp) =>
-                builder.Build());
+                builder.AddStep(new RandomStep()).Build());
 
             services.AddScoped<IRequestHandler<Bho, Qualcosa>, BhoHandler>();
 
@@ -42,6 +43,8 @@ public class MediaSharpBenchmarks
 
             return contBuilder.Build();
         }
+
+
     }
 
     [Benchmark]
@@ -57,4 +60,21 @@ public class MediaSharpBenchmarks
     //}
 
 
+}
+
+public class RandomStep : IExecutionPipeStep
+{
+    private int numerino = 0;
+
+    /// <inheritdoc />
+    public Task<TResult> ExecutePipelineStep<TResult>(
+        IRequest<TResult> request,
+        ExecutionPipeStepDelegate<TResult> next,
+        CancellationToken cancellationToken)
+            where TResult : class
+    {
+        _ = Interlocked.Increment(ref numerino);
+
+        return next();
+    }
 }
