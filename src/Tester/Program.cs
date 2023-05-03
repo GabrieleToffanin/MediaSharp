@@ -1,4 +1,5 @@
-﻿using BenchmarkDotNet.Running;
+﻿
+using BenchmarkDotNet.Running;
 using Tester.Benchmark;
 
 var summary = BenchmarkRunner.Run<MediaSharpBenchmarks>();
@@ -6,7 +7,6 @@ var summary = BenchmarkRunner.Run<MediaSharpBenchmarks>();
 //var bho = new Bho(1);
 
 //await using var scope = CreateContainer().BeginLifetimeScope();
-//scope.Resolve<IRequestHandler<Bho, Qualcosa>>();
 //var mediator = scope.Resolve<IMediator>();
 
 //var result = await mediator.SendAsync(bho, CancellationToken.None);

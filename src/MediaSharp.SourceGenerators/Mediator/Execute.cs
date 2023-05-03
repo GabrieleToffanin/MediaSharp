@@ -173,7 +173,7 @@ internal static class Execute
                                     Identifier("request"))
                                 .WithType
                                 (
-                                    IdentifierName("MediaSharp.Core.Internal.RequestProxy")),
+                                    IdentifierName("MediaSharp.Core.IRequest<object>")),
                             Token(SyntaxKind.CommaToken),
                             Parameter
                                 (
@@ -212,11 +212,7 @@ internal static class Execute
                                                         BinaryExpression
                                                         (
                                                             SyntaxKind.AsExpression,
-                                                            MemberAccessExpression
-                                                            (
-                                                                SyntaxKind.SimpleMemberAccessExpression,
-                                                                IdentifierName("request"),
-                                                                IdentifierName("Proxy")),
+                                                            IdentifierName("request"),
                                                             IdentifierName(classArgumentName))),
                                                     Token(SyntaxKind.CommaToken),
                                                     Argument

@@ -2,7 +2,6 @@
 using MediaSharp.Core.Pipe.Core;
 using MediaSharp.Core.Pipe.Execution;
 using System.Runtime.CompilerServices;
-using System.Runtime.InteropServices;
 
 
 #pragma warning disable CS0618
@@ -12,8 +11,6 @@ namespace MediaSharp.Core.Internal;
 /// <inheritdoc />
 internal sealed class Mediator : IMediator
 {
-    private static readonly Dictionary<Type, RequestProxy> CachedProxies = new();
-
     /// <summary>
     /// This is the execution pipe, that has the duty of executing
     /// the <see cref="ExecutionPipeContainer"/> collection.
@@ -32,7 +29,6 @@ internal sealed class Mediator : IMediator
     {
         this._container = container;
         this._mediatorContext = mediatorContext;
-
     }
 
     /// <inheritdoc />
@@ -43,16 +39,17 @@ internal sealed class Mediator : IMediator
     {
         var requestType = request.GetType();
 
-        this._mediatorContext.RequestHandlers.TryGetValue(requestType, out var handler);
+        var exists = this._mediatorContext.RequestHandlers.TryGetValue(requestType, out var handler);
 
-        if (!CachedProxies.TryGetValue(requestType, out var proxy))
-            proxy = AddAndGetProxyValue(ref request, requestType);
+        if (!exists)
+            handler = this._mediatorContext.Resolve<TResult>(requestType);
+
+        var proxy = Unsafe.As<IRequest<TResult>, IRequest<object>>(ref request);
 
         if (this._container is { Starter.Count: > 0 })
             return await this.ExecutePipeline(request, handler!, proxy, cancellationToken);
 
-
-        return (TResult)await handler!.HandleAsync(proxy, cancellationToken);
+        return (await handler!.HandleAsync(proxy, cancellationToken) as TResult)!;
     }
 
     /// <summary>
@@ -63,36 +60,23 @@ internal sealed class Mediator : IMediator
     /// <typeparam name="TResult">Current expected response type</typeparam>
     /// <param name="request">The current <see cref="IRequest{TResult}"/></param>
     /// <param name="handler">Pre calculated <see cref="IRequestHandler{TRequest,TResponse}"/></param>
-    /// <param name="proxy">Pre calculated <see cref="RequestProxy"/></param>
+    /// <param name="requestStarter">Pre calculated <see cref="IRequest{TResult}"/></param>
     /// <param name="cancellationToken">Cancellation token</param>
     /// <returns><see cref="TResult"/></returns>
     [MethodImpl(MethodImplOptions.NoInlining)]
     private async Task<TResult> ExecutePipeline<TResult>(
         IRequest<TResult> request,
         IWrappableHandler handler,
-        RequestProxy proxy,
+        IRequest<object> requestStarter,
         CancellationToken cancellationToken)
-            where TResult : class
-                => await this._container.Starter.Aggregate((ExecutionPipeStepDelegate<TResult>)
-                        await handler!.HandleAsync(proxy, cancellationToken),
-                        (next, pipeline) =>
-                            () => pipeline.ExecutePipelineStep(request, next, cancellationToken))();
-
-
-    [MethodImpl(MethodImplOptions.AggressiveOptimization | MethodImplOptions.NoInlining)]
-    private static ref RequestProxy AddAndGetProxyValue<TResult>(
-        ref IRequest<TResult> request,
-        in Type requestType)
-            where TResult : class
+        where TResult : class
     {
-        ref var refToProxy =
-            ref CollectionsMarshal.GetValueRefOrAddDefault(
-                CachedProxies,
-                requestType,
-                out var exists);
+        async Task<TResult> Handler() =>
+         await handler.HandleAsync(requestStarter, cancellationToken) as TResult;
 
-        if (!exists) refToProxy = new RequestProxy(Unsafe.As<IRequest<TResult>, IRequest<object>>(ref request));
-
-        return ref refToProxy;
+        return await this._container.Starter.Aggregate(
+            (ExecutionPipeStepDelegate<TResult>)Handler,
+            (next, pipeline) =>
+                () => pipeline.ExecutePipelineStep(request, next, cancellationToken))();
     }
 }
