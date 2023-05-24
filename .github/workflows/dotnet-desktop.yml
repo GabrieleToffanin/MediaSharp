@@ -21,15 +21,15 @@ jobs:
       - name: Restore dependencies
         run: dotnet restore
       - name: Build Core
-        run: dotnet build ./src/MediaSharp.Core/MediaSharp.Core.csproj --no-restore -C Release
+        run: dotnet build ./src/MediaSharp.Core/MediaSharp.Core.csproj --no-restore --configuration Release
       - name: Build Source Generator
-        run: dotnet build ./src/MediaSharp.SourceGenerators/MediaSharp.SourceGenerators.csproj --no-restore -C Release
+        run: dotnet build ./src/MediaSharp.SourceGenerators/MediaSharp.SourceGenerators.csproj --no-restore --configuration Release
       - name: Test
-        run: dotnet test --no-build --verbosity normal -C Release
+        run: dotnet test --no-build --verbosity normal --configuration Release
       - name: Dotnet Pack Core
-        run: dotnet pack ./src/MediaSharp.Core/MediaSharp.Core.csproj -c Release -o ${{env.DOTNET_ROOT}}/myapp
+        run: dotnet pack ./src/MediaSharp.Core/MediaSharp.Core.csproj --configuration Release -o ${{env.DOTNET_ROOT}}/myapp
       - name: Dotnet Pack Core
-        run: dotnet pack ./src/MediaSharp.SourceGenerators/MediaSharp.SourceGenerators.csproj -c Release -o ${{env.DOTNET_ROOT}}/myapp
+        run: dotnet pack ./src/MediaSharp.SourceGenerators/MediaSharp.SourceGenerators.csproj --configuration Release -o ${{env.DOTNET_ROOT}}/myapp
       - name: Upload artifact for deployment job
         uses: actions/upload-artifact@v2
         with:
