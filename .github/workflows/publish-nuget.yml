@@ -6,8 +6,6 @@ name: .NET
 on:
   push:
     branches: [ "master" ]
-  pull_request:
-    branches: [ "master" ]
 
 jobs:
   Build-Test:
@@ -28,9 +26,9 @@ jobs:
       #- name: Test
        # run: dotnet test ./tests/MediaSharp.Core.Test/MediaSharp.Core.Test.csproj --no-build --verbosity normal --configuration Release
       - name: Dotnet Pack MediaSharp
-        run: dotnet pack ./src/MediaSharp.Core/MediaSharp.Core.csproj  -IncludeReferencedProjects --configuration Release -o ${{env.DOTNET_ROOT}}/media-sharp -IncludeReferencedProjects
+        run: dotnet pack ./src/MediaSharp.Core/MediaSharp.Core.csproj --configuration Release -o ${{env.DOTNET_ROOT}}/media-sharp -IncludeReferencedProjects
       - name: Dotnet Pack SourceGenerators
-        run: dotnet pack ./src/MediaSharp.SourceGenerators/MediaSharp.SourceGenerators.csproj  -IncludeReferencedProjects --configuration Release -o ${{env.DOTNET_ROOT}}/media-sharp-source-gen
+        run: dotnet pack ./src/MediaSharp.SourceGenerators/MediaSharp.SourceGenerators.csproj --configuration Release -o ${{env.DOTNET_ROOT}}/media-sharp-source-gen
       - name: Upload artifact for MediaSharp
         uses: actions/upload-artifact@v2
         with:
