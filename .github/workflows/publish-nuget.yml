@@ -12,6 +12,7 @@ on:
 jobs:
   Build-Test:
     runs-on: ubuntu-latest
+    environment: Release
     steps:
       - uses: actions/checkout@v3
       - name: Setup .NET
@@ -43,6 +44,7 @@ jobs:
         
   Publish-MediaSharp-Core:
     runs-on: ubuntu-latest
+    environment: Release
     needs: Build-Test
     steps:
       - name: Download artifact from build job
@@ -53,6 +55,7 @@ jobs:
         run: dotnet nuget push ./MediaSharp.Core.*.nupkg --api-key ${{secrets.MEDIA_SHARP_KEY}} --source https://api.nuget.org/v3/index.json
   Publish-MediaSharp-SourceGenerators:
     runs-on: ubuntu-latest
+    environment: Release
     needs: Build-Test
     steps:
       - name: Download artifact from build job
