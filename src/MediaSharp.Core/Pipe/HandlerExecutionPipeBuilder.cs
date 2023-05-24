@@ -26,6 +26,7 @@ public class HandlerExecutionPipeBuilder
 
         return this;
     }
+
     /// <inheritdoc />
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public HandlerExecutionPipeBuilder AddStep(IExecutionPipeStep step)

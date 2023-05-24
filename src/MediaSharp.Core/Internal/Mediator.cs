@@ -71,8 +71,10 @@ internal sealed class Mediator : IMediator
         CancellationToken cancellationToken)
         where TResult : class
     {
-        async Task<TResult> Handler() =>
-         await handler.HandleAsync(requestStarter, cancellationToken) as TResult;
+        async Task<TResult> Handler()
+        {
+            return await handler.HandleAsync(requestStarter, cancellationToken) as TResult;
+        }
 
         return await this._container.Starter.Aggregate(
             (ExecutionPipeStepDelegate<TResult>)Handler,
