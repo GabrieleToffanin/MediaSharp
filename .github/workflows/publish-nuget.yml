@@ -22,21 +22,21 @@ jobs:
       - name: Restore dependencies
         run: dotnet restore
       - name: Build Core
-        run: dotnet build ./src/MediaSharp.Core/MediaSharp.Core.csproj --no-restore --configuration Release
+        run: dotnet build ./src/MediaSharp.Core/MediaSharp.Core.csproj --no-restore --configuration Release 
       - name: Build Source Generator
         run: dotnet build ./src/MediaSharp.SourceGenerators/MediaSharp.SourceGenerators.csproj --no-restore --configuration Release
       #- name: Test
        # run: dotnet test ./tests/MediaSharp.Core.Test/MediaSharp.Core.Test.csproj --no-build --verbosity normal --configuration Release
-      - name: Dotnet Pack Core
-        run: dotnet pack ./src/MediaSharp.Core/MediaSharp.Core.csproj --configuration Release -o ${{env.DOTNET_ROOT}}/media-sharp
-      - name: Dotnet Pack Core
-        run: dotnet pack ./src/MediaSharp.SourceGenerators/MediaSharp.SourceGenerators.csproj --configuration Release -o ${{env.DOTNET_ROOT}}/media-sharp-source-gen
-      - name: Upload artifact for deployment job
+      - name: Dotnet Pack MediaSharp
+        run: dotnet pack ./src/MediaSharp.Core/MediaSharp.Core.csproj --configuration Release -o ${{env.DOTNET_ROOT}}/media-sharp -IncludeReferencedProjects
+      - name: Dotnet Pack SourceGenerators
+        run: dotnet pack ./src/MediaSharp.SourceGenerators/MediaSharp.SourceGenerators.csproj --configuration Release -o ${{env.DOTNET_ROOT}}/media-sharp-source-gen -IncludeReferencedProjects
+      - name: Upload artifact for MediaSharp
         uses: actions/upload-artifact@v2
         with:
           name: .core-package
           path: ${{env.DOTNET_ROOT}}/media-sharp
-      - name: Upload artifact for deployment job
+      - name: Upload artifact SourceGenerators
         uses: actions/upload-artifact@v2
         with:
           name: .source-generator-package
