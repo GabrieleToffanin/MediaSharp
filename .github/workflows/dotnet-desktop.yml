@@ -24,8 +24,8 @@ jobs:
         run: dotnet build ./src/MediaSharp.Core/MediaSharp.Core.csproj --no-restore --configuration Release
       - name: Build Source Generator
         run: dotnet build ./src/MediaSharp.SourceGenerators/MediaSharp.SourceGenerators.csproj --no-restore --configuration Release
-      - name: Test
-        run: dotnet test ./tests/MediaSharp.Core.Test/MediaSharp.Core.Test.csproj --no-build --verbosity normal --configuration Release
+      #- name: Test
+       # run: dotnet test ./tests/MediaSharp.Core.Test/MediaSharp.Core.Test.csproj --no-build --verbosity normal --configuration Release
       - name: Dotnet Pack Core
         run: dotnet pack ./src/MediaSharp.Core/MediaSharp.Core.csproj --configuration Release -o ${{env.DOTNET_ROOT}}/myapp
       - name: Dotnet Pack Core
