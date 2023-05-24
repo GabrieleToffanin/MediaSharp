@@ -27,14 +27,19 @@ jobs:
       #- name: Test
        # run: dotnet test ./tests/MediaSharp.Core.Test/MediaSharp.Core.Test.csproj --no-build --verbosity normal --configuration Release
       - name: Dotnet Pack Core
-        run: dotnet pack ./src/MediaSharp.Core/MediaSharp.Core.csproj --configuration Release -o ${{env.DOTNET_ROOT}}/myapp
+        run: dotnet pack ./src/MediaSharp.Core/MediaSharp.Core.csproj --configuration Release -o ${{env.DOTNET_ROOT}}/core-package
       - name: Dotnet Pack Core
-        run: dotnet pack ./src/MediaSharp.SourceGenerators/MediaSharp.SourceGenerators.csproj --configuration Release -o ${{env.DOTNET_ROOT}}/myapp
+        run: dotnet pack ./src/MediaSharp.SourceGenerators/MediaSharp.SourceGenerators.csproj --configuration Release -o ${{env.DOTNET_ROOT}}/source-generator-package
       - name: Upload artifact for deployment job
         uses: actions/upload-artifact@v2
         with:
           name: .nuget-packages
-          path: ${{env.DOTNET_ROOT}}/myapp
+          path: ${{env.DOTNET_ROOT}}/core-package
+      - name: Upload artifact for deployment job
+        uses: actions/upload-artifact@v2
+        with:
+          name: .nuget-packages
+          path: ${{env.DOTNET_ROOT}}/source-generator-package
         
   Publish-MediaSharp-Core:
     runs-on: ubuntu-latest
@@ -43,5 +48,17 @@ jobs:
       - name: Download artifact from build job
         uses: actions/download-artifact@v2
         with:
-          name: .nuget-packages
+          name: .core-package
+      - name: Push to NuGet
+        run: dotnet nuget push "*.nupkg" --api-key ${{secrets.MEDIA_SHARP_KEY}} --source https://api.nuget.org/v3/index.json
+  Publish-MediaSharp-SourceGenerators:
+    runs-on: ubuntu-latest
+    needs: Build-Test
+    steps:
+      - name: Download artifact from build job
+        uses: actions/download-artifact@v2
+        with:
+          name: .source-generator-package
+      - name: Push to NuGet
+        run: dotnet nuget push "*.nupkg" --api-key ${{secrets.MEDIA_SHARP_SOURCE_GEN_KEY}} --source https://api.nuget.org/v3/index.json
  
