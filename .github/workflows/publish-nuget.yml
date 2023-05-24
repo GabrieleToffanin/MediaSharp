@@ -50,7 +50,7 @@ jobs:
         with:
           name: .core-package
       - name: Push to NuGet
-        run: dotnet nuget push "*.nupkg" --api-key ${{secrets.MEDIA_SHARP_KEY}} --source https://api.nuget.org/v3/index.json
+        run: dotnet nuget push *.nupkg --api-key ${{secrets.MEDIA_SHARP_KEY}} -s https://api.nuget.org/v3/index.json
   Publish-MediaSharp-SourceGenerators:
     runs-on: ubuntu-latest
     needs: Build-Test
@@ -60,5 +60,5 @@ jobs:
         with:
           name: .source-generator-package
       - name: Push to NuGet
-        run: dotnet nuget push "*.nupkg" --api-key ${{secrets.MEDIA_SHARP_SOURCE_GEN_KEY}} --source https://api.nuget.org/v3/index.json
+        run: dotnet nuget push *.nupkg --api-key ${{secrets.MEDIA_SHARP_SOURCE_GEN_KEY}} -s https://api.nuget.org/v3/index.json
  
