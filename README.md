@@ -2,6 +2,8 @@
 
 ## Reflection free implementation of Mediator Pattern, as MediatR does.
 
+[![.Nuget-Deploy](https://github.com/GabrieleToffanin/MediaSharp/actions/workflows/publish-nuget.yml/badge.svg?branch=master)](https://github.com/GabrieleToffanin/MediaSharp/actions/workflows/publish-nuget.yml)
+
 Using SourceGenerators for generating usefull code for the library, and deleting some boilerplate code : 
 > [GitHub - Mediator Source Generator](https://github.com/GabrieleToffanin/MediaSharp/tree/master/src/MediaSharp.SourceGenerators/Mediator)
 
