@@ -11,7 +11,7 @@
 
   <ItemGroup>
     <PackageReference Include="Microsoft.Extensions.DependencyInjection.Abstractions" Version="7.0.0" />
-    <ProjectReference Include="..\MediaSharp.SourceGenerators\MediaSharp.SourceGenerators.csproj" ReferenceOutputAssembly="false" OutputItemType="Analyzer" />
+    <PackageReference Include="MediaSharp.SourceGenerators" Version="[1.0.3, 3.0.0)" />
   </ItemGroup>
 
 </Project>
