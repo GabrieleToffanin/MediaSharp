@@ -12,8 +12,8 @@ public partial class MediatorCallGenerator : IIncrementalGenerator
     {
 
         //#if DEBUG
-        //            if (!Debugger.IsAttached)
-        //                Debugger.Launch();
+        //        if (!Debugger.IsAttached)
+        //            Debugger.Launch();
         //#endif
 
         IncrementalValuesProvider<HandlerInfoSyntax> callableMediatorMethodsInfo =

@@ -1,6 +1,7 @@
 ﻿using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.CSharp;
 using Microsoft.CodeAnalysis.CSharp.Syntax;
+using System.Collections.Generic;
 using System.Collections.Immutable;
 using System.Linq;
 using static Microsoft.CodeAnalysis.CSharp.SyntaxFactory;
@@ -44,11 +45,19 @@ internal static class Execute
     {
         var memberDeclSyntax = new SyntaxList<MemberDeclarationSyntax>();
 
+        List<UsingDirectiveSyntax> usings = new List<UsingDirectiveSyntax>();
+
         foreach (var classSymbol in item)
         {
             var constructorInfo = classSymbol.ClassDelc.Members.FirstOrDefault(x => x is ConstructorDeclarationSyntax);
 
             var parametersInfo = (constructorInfo as ConstructorDeclarationSyntax)?.ParameterList;
+
+            usings.AddRange(
+                parametersInfo.Parameters.SelectMany(x =>
+                    x.Ancestors()
+                        .OfType<CompilationUnitSyntax>()
+                        .FirstOrDefault().Usings));
 
             var includedContextParametersSyntax = parametersInfo?.AddParameters(CreateMediaSharpContextInjection());
 
@@ -81,6 +90,7 @@ internal static class Execute
         }
 
         return CompilationUnit()
+            .AddUsings(usings.Distinct().ToArray())
             .AddMembers(memberDeclSyntax.ToArray())
             .NormalizeWhitespace();
     }
