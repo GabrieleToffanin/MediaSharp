@@ -27,19 +27,19 @@ jobs:
       #- name: Test
        # run: dotnet test ./tests/MediaSharp.Core.Test/MediaSharp.Core.Test.csproj --no-build --verbosity normal --configuration Release
       - name: Dotnet Pack Core
-        run: dotnet pack ./src/MediaSharp.Core/MediaSharp.Core.csproj --configuration Release -o ${{env.DOTNET_ROOT}}/core-package
+        run: dotnet pack ./src/MediaSharp.Core/MediaSharp.Core.csproj --configuration Release -o ${{env.DOTNET_ROOT}}/media-sharp
       - name: Dotnet Pack Core
-        run: dotnet pack ./src/MediaSharp.SourceGenerators/MediaSharp.SourceGenerators.csproj --configuration Release -o ${{env.DOTNET_ROOT}}/source-generator-package
+        run: dotnet pack ./src/MediaSharp.SourceGenerators/MediaSharp.SourceGenerators.csproj --configuration Release -o ${{env.DOTNET_ROOT}}/media-sharp-source-gen
       - name: Upload artifact for deployment job
         uses: actions/upload-artifact@v2
         with:
-          name: .nuget-packages
-          path: ${{env.DOTNET_ROOT}}/core-package
+          name: .core-package
+          path: ${{env.DOTNET_ROOT}}/media-sharp
       - name: Upload artifact for deployment job
         uses: actions/upload-artifact@v2
         with:
-          name: .nuget-packages
-          path: ${{env.DOTNET_ROOT}}/source-generator-package
+          name: .source-generator-package
+          path: ${{env.DOTNET_ROOT}}/media-sharp-source-gen
         
   Publish-MediaSharp-Core:
     runs-on: ubuntu-latest
