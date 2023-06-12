@@ -1,5 +1,6 @@
 ﻿using MediaSharp.Core;
 using MediaSharp.Core.Attributes;
+using Tester.Foooooooo.Qualcosa;
 
 namespace Tester;
 
@@ -13,6 +14,11 @@ public partial class BhoHandler : IRequestHandler<Bho, Qualcosa>
             Id = 1
         }
     };
+
+    public BhoHandler(IFoo foo)
+    {
+
+    }
 
     public async Task<Qualcosa> HandleAsync(Bho request, CancellationToken cancellationToken)
     {

@@ -53,11 +53,9 @@ internal static class Execute
 
             var parametersInfo = (constructorInfo as ConstructorDeclarationSyntax)?.ParameterList;
 
-            usings.AddRange(
-                parametersInfo.Parameters.SelectMany(x =>
-                    x.Ancestors()
-                        .OfType<CompilationUnitSyntax>()
-                        .FirstOrDefault().Usings));
+            var usingsInfo = classSymbol.ClassDelc.Members.Select(x => x.Parent.Parent.Parent as CompilationUnitSyntax).FirstOrDefault();
+
+            usings.AddRange(usingsInfo.Usings);
 
             var includedContextParametersSyntax = parametersInfo?.AddParameters(CreateMediaSharpContextInjection());
 
@@ -74,7 +72,9 @@ internal static class Execute
 
             var decl =
                 NamespaceDeclaration(
-                    IdentifierName(classSymbol.Namespace.OriginalDefinition.ToString())).WithMembers(
+                    IdentifierName(classSymbol.Namespace.OriginalDefinition.ToString()))
+                    .AddUsings(usings.Distinct().ToArray())
+                    .WithMembers(
                     SingletonList<MemberDeclarationSyntax>(
                         ClassDeclaration(classSymbol.ClassDelc.Identifier)
                             .WithModifiers(
@@ -90,7 +90,6 @@ internal static class Execute
         }
 
         return CompilationUnit()
-            .AddUsings(usings.Distinct().ToArray())
             .AddMembers(memberDeclSyntax.ToArray())
             .NormalizeWhitespace();
     }
