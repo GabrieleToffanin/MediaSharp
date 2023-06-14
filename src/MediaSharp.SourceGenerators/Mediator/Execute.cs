@@ -1,8 +1,6 @@
 ﻿using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.CSharp;
 using Microsoft.CodeAnalysis.CSharp.Syntax;
-using System.Collections.Generic;
-using System.Collections.Immutable;
 using System.Linq;
 using static Microsoft.CodeAnalysis.CSharp.SyntaxFactory;
 
@@ -41,53 +39,27 @@ internal static class Execute
         return isClassMediaRegistrable;
     }
 
-    public static CompilationUnitSyntax GetKnownClassSyntax(ImmutableArray<HandlerInfoSyntax> item)
+    public static CompilationUnitSyntax GetKnownClassSyntax(HandlerInfoSyntax item, ConstructorInfo ctorInfo)
     {
         var memberDeclSyntax = new SyntaxList<MemberDeclarationSyntax>();
+        var ctorSyntax = CreateConstuctorBased(item.ClassDelc, ctorInfo);
 
-        List<UsingDirectiveSyntax> usings = new List<UsingDirectiveSyntax>();
-
-        foreach (var classSymbol in item)
-        {
-            var constructorInfo = classSymbol.ClassDelc.Members.FirstOrDefault(x => x is ConstructorDeclarationSyntax);
-
-            var parametersInfo = (constructorInfo as ConstructorDeclarationSyntax)?.ParameterList;
-
-            var usingsInfo = classSymbol.ClassDelc.Members.Select(x => x.Parent.Parent.Parent as CompilationUnitSyntax).FirstOrDefault();
-
-            usings.AddRange(usingsInfo.Usings);
-
-            var includedContextParametersSyntax = parametersInfo?.AddParameters(CreateMediaSharpContextInjection());
-
-            var ctorSyntax = CreateConstuctorBased(classSymbol.ClassDelc, includedContextParametersSyntax);
-
-            if (parametersInfo is not null)
-            {
-                ctorSyntax = ctorSyntax.WithInitializer(
-                    ConstructorInitializer(
-                        SyntaxKind.ThisConstructorInitializer,
-                        CreateConstructorInitArgSyntax(parametersInfo)
-                    ));
-            }
-
-            var decl =
-                NamespaceDeclaration(
-                    IdentifierName(classSymbol.Namespace.OriginalDefinition.ToString()))
-                    .AddUsings(usings.Distinct().ToArray())
-                    .WithMembers(
-                    SingletonList<MemberDeclarationSyntax>(
-                        ClassDeclaration(classSymbol.ClassDelc.Identifier)
-                            .WithModifiers(
-                                TokenList(
-                                    new[]
-                                    {
+        var decl =
+            NamespaceDeclaration(
+                IdentifierName(item.Namespace.OriginalDefinition.ToString()))
+                .WithMembers(
+                SingletonList<MemberDeclarationSyntax>(
+                    ClassDeclaration(item.ClassDelc.Identifier)
+                        .WithModifiers(
+                            TokenList(
+                                new[]
+                                {
                                         Token(SyntaxKind.PublicKeyword),
                                         Token(SyntaxKind.PartialKeyword)
-                                    }))
-                            .AddMembers(ctorSyntax, CreateMethodImplSyntax(classSymbol.RequestFull))));
+                                }))
+                        .AddMembers(ctorSyntax, CreateMethodImplSyntax(item.RequestFull))));
 
-            memberDeclSyntax = memberDeclSyntax.Add(decl);
-        }
+        memberDeclSyntax = memberDeclSyntax.Add(decl);
 
         return CompilationUnit()
             .AddMembers(memberDeclSyntax.ToArray())
@@ -116,17 +88,28 @@ internal static class Execute
     }
 
 
-    private static ConstructorDeclarationSyntax CreateConstuctorBased(ClassDeclarationSyntax classSymbol, ParameterListSyntax includedContextParametersSyntax)
+    private static ConstructorDeclarationSyntax CreateConstuctorBased(ClassDeclarationSyntax classSymbol, ConstructorInfo ctorInfo)
     {
+        AttributeListSyntax[] attributes =
+        {
+            AttributeList(SingletonSeparatedList(
+                Attribute(IdentifierName("global::System.CodeDom.Compiler.GeneratedCode")).AddArgumentListArguments(
+                    AttributeArgument(LiteralExpression(SyntaxKind.StringLiteralExpression, Literal(typeof(MediatorCallGenerator).FullName))),
+                    AttributeArgument(LiteralExpression(SyntaxKind.StringLiteralExpression, Literal(typeof(MediatorCallGenerator).Assembly.GetName().Version.ToString())))))),
+            AttributeList(SingletonSeparatedList(Attribute(IdentifierName("global::System.Diagnostics.DebuggerNonUserCode")))),
+            AttributeList(SingletonSeparatedList(Attribute(IdentifierName("global::System.Diagnostics.CodeAnalysis.ExcludeFromCodeCoverage"))))
+        };
+
+        var constructorArgumentList = ctorInfo.parameters.Select(field => Parameter(Identifier(field.Name)).WithType(IdentifierName(field.Type))).ToList();
+
+        constructorArgumentList.Add(CreateMediaSharpContextInjection());
+
         return ConstructorDeclaration(
                 classSymbol.Identifier)
             .WithModifiers(
                 TokenList(
                     Token(SyntaxKind.PublicKeyword)))
-            .WithParameterList(includedContextParametersSyntax ??
-                               ParameterList(
-                                   SeparatedList<ParameterSyntax>(
-                                       new SyntaxNodeOrToken[] { CreateMediaSharpContextInjection() })))
+            .AddParameterListParameters(constructorArgumentList.ToArray())
             .WithBody(
                 Block(
                     SingletonList<StatementSyntax>(
@@ -140,7 +123,7 @@ internal static class Execute
                                     ArgumentList(
                                         SingletonSeparatedList<ArgumentSyntax>(
                                             Argument(
-                                                ThisExpression()))))))));
+                                                ThisExpression())))))))).AddAttributeLists(attributes);
     }
 
     private static MethodDeclarationSyntax CreateMethodImplSyntax(string classArgumentName)
