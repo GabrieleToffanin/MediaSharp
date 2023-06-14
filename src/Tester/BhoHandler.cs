@@ -1,7 +1,6 @@
 ﻿using MediaSharp.Core;
 using MediaSharp.Core.Attributes;
 using Tester.Foooooooo.Qualcosa;
-using Tester.Request.Cristo;
 
 namespace Tester;
 

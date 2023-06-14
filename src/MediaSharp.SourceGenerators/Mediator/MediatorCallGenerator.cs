@@ -46,7 +46,7 @@ public partial class MediatorCallGenerator : IIncrementalGenerator
             {
                 CompilationUnitSyntax compilationUnit = Execute.GetKnownClassSyntax(item.Left, item.Right);
                 int i = 0;
-                context.AddSource($"NoIdea{i}.g.cs", compilationUnit.GetText(Encoding.UTF8));
+                context.AddSource($"MediaSharp.SourceGenerated.{item.Left.ClassDelc.Identifier}.g.cs", compilationUnit.GetText(Encoding.UTF8));
                 i++;
             });
     }

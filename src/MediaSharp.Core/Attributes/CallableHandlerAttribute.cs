@@ -1,4 +1,6 @@
-﻿namespace MediaSharp.Core.Attributes;
+﻿using System;
+
+namespace MediaSharp.Core.Attributes;
 
 /// <summary>
 /// This attribute is intended to be used on the

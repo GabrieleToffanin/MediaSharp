@@ -6,7 +6,6 @@ using MediaSharp.Core.DependencyInjection;
 using MediaSharp.Core.Model;
 using MediaSharp.Core.Pipe.Core;
 using Microsoft.Extensions.DependencyInjection;
-using Tester.Request.Cristo;
 
 namespace Tester.Benchmark;
 
