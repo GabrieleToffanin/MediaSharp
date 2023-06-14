@@ -25,7 +25,7 @@ internal static class Execute
         if (isClassMediaRegistrable)
         {
             var currentTypeTarget = classSymbol.AllInterfaces[0].TypeArguments[0];
-            var fullArgumentNamespace = currentTypeTarget.ContainingNamespace.Name;
+            var fullArgumentNamespace = currentTypeTarget.ContainingNamespace.ToDisplayString(SymbolDisplayFormat.FullyQualifiedFormat);
             var fullArgumentName = currentTypeTarget.Name;
 
             var separatorToken = string.IsNullOrEmpty(fullArgumentNamespace) ? "" : ".";

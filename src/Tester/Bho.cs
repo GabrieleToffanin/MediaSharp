@@ -1,5 +1,5 @@
 ﻿using MediaSharp.Core;
 
-namespace Tester;
+namespace Tester.Request.Cristo;
 
 public record Bho(int Id) : IRequest<Qualcosa>;
