@@ -30,6 +30,19 @@ For creating a request handler **here is where the source generator kicks in** y
 [CallableHandler]
 public partial class SomethingRequestHandler : IRequestHandler<GetSomethingById, Something>
 {
+  // for injecting from DI now the source generator has support for AutoConstructor
+  // so we can actually do
+
+  private readonly MyDbContext _dbContext;
+
+  // and the source generator will actually generate a constructor as
+  // public SomethingRequestHandler(MediatorContext context, MyDbContext dbContext)
+  //{
+  //  this._dbContext = dbContext
+  //}
+  // automatically.
+
+
   private List<Something> things = new List<Something>()
     {
         new Something()
