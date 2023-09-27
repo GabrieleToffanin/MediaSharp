@@ -44,7 +44,7 @@ public partial class SomethingRequestHandler : IRequestHandler<GetSomethingById,
 
   public async Task<Something> HandleAsync(GetSomethingById request, CancellationToken cancellationToken)
     {
-        return await Task.FromResult(() => things.FirstOrDefault(x => x.Id == request.Id));
+        return await _dbContext.Set<Something>().FirstOrDefaultAsync(x => x.Id == request.Id);
     }
 }
 
