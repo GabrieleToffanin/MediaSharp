@@ -42,15 +42,6 @@ public partial class SomethingRequestHandler : IRequestHandler<GetSomethingById,
   //}
   // automatically.
 
-
-  private List<Something> things = new List<Something>()
-    {
-        new Something()
-        {
-            Id = 1
-        }
-    };
-
   public async Task<Something> HandleAsync(GetSomethingById request, CancellationToken cancellationToken)
     {
         return await Task.FromResult(() => things.FirstOrDefault(x => x.Id == request.Id));
