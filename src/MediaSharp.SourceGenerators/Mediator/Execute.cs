@@ -1,4 +1,5 @@
-﻿using Microsoft.CodeAnalysis;
+﻿using System.Collections.Generic;
+using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.CSharp;
 using Microsoft.CodeAnalysis.CSharp.Syntax;
 using System.Linq;
@@ -102,6 +103,28 @@ internal static class Execute
 
         var constructorArgumentList = ctorInfo.parameters.Select(field => Parameter(Identifier(field.Name)).WithType(IdentifierName(field.Type))).ToList();
 
+        List<ExpressionStatementSyntax> statements = ctorInfo.parameters.Select(
+            x => ExpressionStatement(
+                AssignmentExpression(
+                    SyntaxKind.SimpleAssignmentExpression,
+                    MemberAccessExpression(
+                        SyntaxKind.SimpleMemberAccessExpression,
+                        ThisExpression(),
+                        IdentifierName(x.Name)),
+                    IdentifierName(x.Name)))).ToList();
+        
+        statements.Add(ExpressionStatement(
+            InvocationExpression(
+                    MemberAccessExpression(
+                        SyntaxKind.SimpleMemberAccessExpression,
+                        IdentifierName("context"),
+                        IdentifierName("Add")))
+                .WithArgumentList(
+                    ArgumentList(
+                        SingletonSeparatedList<ArgumentSyntax>(
+                            Argument(
+                                ThisExpression()))))));
+        
         constructorArgumentList.Add(CreateMediaSharpContextInjection());
 
         return ConstructorDeclaration(
@@ -111,19 +134,7 @@ internal static class Execute
                     Token(SyntaxKind.PublicKeyword)))
             .AddParameterListParameters(constructorArgumentList.ToArray())
             .WithBody(
-                Block(
-                    SingletonList<StatementSyntax>(
-                        ExpressionStatement(
-                            InvocationExpression(
-                                    MemberAccessExpression(
-                                        SyntaxKind.SimpleMemberAccessExpression,
-                                        IdentifierName("context"),
-                                        IdentifierName("Add")))
-                                .WithArgumentList(
-                                    ArgumentList(
-                                        SingletonSeparatedList<ArgumentSyntax>(
-                                            Argument(
-                                                ThisExpression())))))))).AddAttributeLists(attributes);
+                Block(statements)).AddAttributeLists(attributes);
     }
 
     private static MethodDeclarationSyntax CreateMethodImplSyntax(string classArgumentName)
