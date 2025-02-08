@@ -81,7 +81,7 @@ jobs:
       # Step 1: Create the NuGet package from .nuspec
       - name: Generate NuGet package from .nuspec
         run: |
-          nuget pack ./package.nuspec -OutputDirectory ${{env.DOTNET_ROOT}}/nuget-packages
+          dotnet pack ./src/MediaSharp --configuration Release -o ${{env.DOTNET_ROOT}}/nuget-packages
 
       # Step 2: Publish to Public NuGet Feed
       - name: Push to Public NuGet Feed
