@@ -71,6 +71,13 @@ jobs:
       - name: Checkout the repository
         uses: actions/checkout@v3
 
+      # Installa NuGet CLI
+      - name: Install NuGet CLI
+        run: |
+          wget https://dist.nuget.org/win-x86-commandline/latest/nuget.exe -O nuget.exe
+          chmod +x nuget.exe
+          sudo mv nuget.exe /usr/local/bin/nuget
+
       # Step 1: Create the NuGet package from .nuspec
       - name: Generate NuGet package from .nuspec
         run: |
