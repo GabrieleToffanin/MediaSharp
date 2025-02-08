@@ -16,7 +16,7 @@ jobs:
       - name: Setup .NET
         uses: actions/setup-dotnet@v3
         with:
-          dotnet-version: 6.0.x
+          dotnet-version: 9.0.x
       - name: Restore dependencies
         run: dotnet restore
       - name: Build Core
@@ -30,12 +30,12 @@ jobs:
       - name: Dotnet Pack SourceGenerators
         run: dotnet pack ./src/MediaSharp.SourceGenerators/MediaSharp.SourceGenerators.csproj --configuration Release -o ${{env.DOTNET_ROOT}}/media-sharp-source-gen
       - name: Upload artifact for MediaSharp
-        uses: actions/upload-artifact@v2
+        uses: actions/upload-artifact@v4
         with:
           name: .core-package
           path: ${{env.DOTNET_ROOT}}/media-sharp
       - name: Upload artifact SourceGenerators
-        uses: actions/upload-artifact@v2
+        uses: actions/upload-artifact@v4
         with:
           name: .source-generator-package
           path: ${{env.DOTNET_ROOT}}/media-sharp-source-gen
