@@ -1,0 +1,22 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+    <PropertyGroup>
+        <!-- Metadati del pacchetto -->
+        <PackageId>MediaSharp</PackageId>
+        <Version>1.2.0</Version>
+        <Authors>gabrieletoffanin</Authors>
+        <Description>Mediator pattern, for decoupling logic.</Description>
+        <PackageLicenseExpression>MIT</PackageLicenseExpression>
+        <RequireLicenseAcceptance>false</RequireLicenseAcceptance>
+
+        <!-- Target Framework -->
+        <TargetFramework>net9.0</TargetFramework>
+    </PropertyGroup>
+
+    <ItemGroup>
+        <!-- Dipendenze -->
+        <PackageReference Include="MediaSharp.SourceGenerators" Version="1.2.0" />
+        <PackageReference Include="MediaSharp.Core" Version="1.1.0" />
+    </ItemGroup>
+
+</Project>
