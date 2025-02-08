@@ -9,14 +9,16 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "MediaSharp.SourceGenerators
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "src", "src", "{C9DD497A-589E-4837-94FB-AAA47A13615B}"
 EndProject
-Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "tests", "tests", "{1108B4B4-13F7-4E2B-B17D-60AE5F6AA3C1}"
-EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{95724C1A-9A86-4625-9F40-05BDAC775E58}"
 	ProjectSection(SolutionItems) = preProject
 		.editorconfig = .editorconfig
 	EndProjectSection
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MediaSharp", "src\MediaSharp\MediaSharp.csproj", "{66C88C13-1827-4821-B487-3CA29C70249A}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "tst", "tst", "{F1B263CA-DA73-4624-A20B-A14868EEF619}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MediaSharp.SourceGenerators.Tests", "tst\MediaSharp.SourceGenerators.Tests\MediaSharp.SourceGenerators.Tests.csproj", "{B9E55A80-53B2-4A39-9FC7-93C36BD60805}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -36,6 +38,10 @@ Global
 		{66C88C13-1827-4821-B487-3CA29C70249A}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{66C88C13-1827-4821-B487-3CA29C70249A}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{66C88C13-1827-4821-B487-3CA29C70249A}.Release|Any CPU.Build.0 = Release|Any CPU
+		{B9E55A80-53B2-4A39-9FC7-93C36BD60805}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{B9E55A80-53B2-4A39-9FC7-93C36BD60805}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{B9E55A80-53B2-4A39-9FC7-93C36BD60805}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{B9E55A80-53B2-4A39-9FC7-93C36BD60805}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -44,6 +50,7 @@ Global
 		{9F279FD5-659D-4FA3-A12D-7EDF4BF7DCE8} = {C9DD497A-589E-4837-94FB-AAA47A13615B}
 		{65C0C384-4F35-42DB-928D-74214AB69695} = {C9DD497A-589E-4837-94FB-AAA47A13615B}
 		{66C88C13-1827-4821-B487-3CA29C70249A} = {C9DD497A-589E-4837-94FB-AAA47A13615B}
+		{B9E55A80-53B2-4A39-9FC7-93C36BD60805} = {F1B263CA-DA73-4624-A20B-A14868EEF619}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {D90FE41F-BCED-472E-9E85-8B113B9E8878}
