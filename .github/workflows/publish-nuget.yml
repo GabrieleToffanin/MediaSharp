@@ -63,3 +63,19 @@ jobs:
       - name: Push to NuGet
         run: dotnet nuget push ./MediaSharp.SourceGenerators.*.nupkg --api-key ${{secrets.MEDIA_SHARP_SOURCE_GEN_KEY}} --source https://api.nuget.org/v3/index.json --skip-duplicate
  
+  Publish-NuGet-Pack-From-Nuspec:
+    runs-on: ubuntu-latest
+    environment: Release
+    needs: [Publish-MediaSharp-Core, Publish-MediaSharp-SourceGenerators]
+    steps:
+      - name: Checkout the repository
+        uses: actions/checkout@v3
+
+      # Step 1: Create the NuGet package from .nuspec
+      - name: Generate NuGet package from .nuspec
+        run: |
+          nuget pack ./package.nuspec -OutputDirectory ${{env.DOTNET_ROOT}}/nuget-packages
+
+      # Step 2: Publish to Public NuGet Feed
+      - name: Push to Public NuGet Feed
+        run: dotnet nuget push ${{env.DOTNET_ROOT}}/nuget-packages/MediaSharp.*.nupkg --api-key ${{secrets.MEDIA_SHARP_PUBLIC_KEY}} --source https://api.nuget.org/v3/index.json --skip-duplicate
