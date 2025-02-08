@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="utf-8"?>
+<package >
+  <metadata>
+    <id>MediaSharp</id>
+    <version>1.2.0</version>
+    <authors>gabrieletoffanin</authors>
+    <requireLicenseAcceptance>false</requireLicenseAcceptance>
+    <license type="expression">MIT</license>
+    <description>Mediator pattern, for decoupling logic.</description>
+    <dependencies>
+      <group targetFramework=".NETStandard2.1">
+        <dependency id="MediaSharp.SourceGenerators" version="1.2.0" />
+        <dependency id="MediaSharp.Core" version="1.1.0" />
+      </group>
+    </dependencies>
+  </metadata>
+</package>
